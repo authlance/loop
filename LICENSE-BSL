@@ -1,0 +1,20 @@
+Business Source License 1.1
+
+Parameters
+Licensor: Ignacio Moreno, Authlance
+Licensed Work: The source code of the Authlance Dashboard (UI components, layouts, extension SDK, and all related frontend assets).
+Additional Use Grant: Customers of Authlance with a valid commercial license are granted the right to modify, adapt, and create derivative works of the Licensed Work for use in their own Authlance deployments.
+Change Date: Seven years from the date this license is first applied.
+Change License: Apache License, Version 2.0.
+
+License Text
+You may copy, modify, create derivative works, redistribute, and make non-production use of the Licensed Work. Production use is permitted only under the Additional Use Grant.
+
+You may not use the Licensed Work to provide, operate, or enable any product or service that competes with Authlance, including authentication platforms, identity systems, billing infrastructure, licensing systems, or related SaaS offerings.
+
+Effective on the Change Date, the Licensed Work becomes available under the Apache License 2.0.
+
+Disclaimer
+THE LICENSED WORK IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND.
+
+(c) 2025 Ignacio Moreno, Authlance. All rights reserved.

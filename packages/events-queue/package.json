@@ -1,0 +1,32 @@
+{
+  "name": "@authlance/events-queue",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@authlance/core": "1.0.0",
+    "inversify": "^5.1.1",
+    "nats": "^2.28.2"
+  },
+  "loopExtensions": [
+    {
+      "backend": "lib/node/events-queue-module"
+    }
+  ],
+  "devDependencies": {
+    "@authlance/ext-scripts": "1.0.0",
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "authlance-ext clean",
+    "build": "authlance-ext build",
+    "watch": "authlance-ext watch",
+    "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
+  }
+}

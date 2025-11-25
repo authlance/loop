@@ -1,0 +1,9 @@
+dist
+node_modules
+lib
+examples/*/src-gen
+examples/*/prerenderer
+examples/*/webpack.config.js
+yarn-error.log
+lerna-debug.log
+.env

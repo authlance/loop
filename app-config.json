@@ -1,0 +1,42 @@
+{
+    "database": {
+        "user": "authlance",
+        "password": "1234",
+        "host": "127.0.0.1",
+        "port": 3306,
+        "schema": "authlance-loop"
+    },
+    "cors": {
+        "allowedOrigins": [
+            "https://new.example.com",
+            "https://local.example.com"
+        ]
+    },
+    "nats": {
+        "url": "nats://localhost:4222"
+    },
+    "postmark": {
+        "server": "XXXXX",
+        "key": "XXXXX",
+        "company": "XXXXX",
+        "templates": {
+            "verification_code_valid": {
+                "alias": "XXXXX",
+                "from": "XXXXX",
+                "fromName": "XXXXX",
+                "fromPosition": "XXXXX"
+            },
+            "recovery_code_valid": {
+                "alias": "XXXXX",
+                "from": "XXXXX",
+                "fromName": "XXXXX",
+                "fromPosition": "XXXXX"
+            }
+        }
+    },
+    "jwtSecret": "XXXXXX",
+    "rootAppUrl": "https://new.example.com",
+    "basePath": "/authlance/loop",
+    "frontEndBasePath": "/",
+    "pat": "pat_XXXXXXXX"
+}

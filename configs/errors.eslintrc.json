@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json.schemastore.org/eslintrc",
+  "rules": {
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/quotes": [
+      "off",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "@typescript-eslint/semi": [
+      "off"
+    ],
+    "@typescript-eslint/type-annotation-spacing": "error",
+    "arrow-body-style": [
+      "off",
+      "as-needed"
+    ],
+    "arrow-parens": [
+      "off",
+      "as-needed"
+    ],
+    "camelcase": "off",
+    "comma-dangle": "off",
+    "curly": "error",
+    "eol-last": "off",
+    "eqeqeq": [
+      "error",
+      "smart"
+    ],
+    "guard-for-in": "off",
+    "id-blacklist": "off",
+    "id-match": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 900
+      }
+    ],
+    "no-duplicate-imports": "error",
+    "no-magic-numbers": "off",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 5
+      }
+    ],
+    "no-new-wrappers": "error",
+    "no-null/no-null": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": [
+      "off",
+      {
+        "hoist": "all"
+      }
+    ],
+    "no-tabs": "error",
+    "no-throw-literal": "error",
+    "no-trailing-spaces": "off",
+    "no-underscore-dangle": "off",
+    "no-unreachable": "error",
+    "no-unused-expressions": "error",
+    "no-var": "error",
+    "no-void": "error",
+    "one-var": [
+      "error",
+      "never"
+    ],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "radix": "off",
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
+    "spaced-comment": [
+      "error",
+      "always",
+      {
+        "exceptions": [
+          "*",
+          "+",
+          "-",
+          "/"
+        ]
+      }
+    ],
+    "import/no-extraneous-dependencies": "off",
+    "import/no-dynamic-require": "error",
+    "no-restricted-imports": [
+      "error",
+      ".",
+      "./",
+      "..",
+      "../"
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.{spec,espec,slow-spec}.{js,ts}"
+      ],
+      "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "no-unused-expressions": "off"
+      }
+    },
+    {
+      "files": [
+        "**/electron-{node,main}/**"
+      ],
+      "rules": {
+        "import/no-dynamic-require": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "../../examples/browser/tailwind.config.js",
+    "css": "../core/src/browser/styles/index.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@/components",
+    "hooks": "@/hooks",
+    "lib": "@/libs",
+    "utils": "@authlance/core/lib/browser/common/cn",
+    "ui": "@authlance/ui/lib/browser/components"
+  },
+  "iconLibrary": "lucide"
+}

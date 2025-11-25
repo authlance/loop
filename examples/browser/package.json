@@ -1,0 +1,66 @@
+{
+  "private": true,
+  "name": "@authlance/browser",
+  "version": "1.0.0",
+  "license": "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0",
+  "loop": {
+    "frontend": {
+      "config": {
+        "applicationName": "Authlance Backend",
+        "webApp": false,
+        "bundleName": "dashboard-bundle.js",
+        "frontEndBasePath": "/",
+        "backendBasePath": "/authlance/loop"
+      }
+    }
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@authlance/common": "1.0.0",
+    "@authlance/core": "1.0.0",
+    "@authlance/sidebar": "1.0.0",
+    "@authlance/events-queue": "1.0.0",
+    "@authlance/identity": "1.0.0",
+    "@authlance/sequelize": "1.0.0",
+    "@authlance/payments": "1.0.0",
+    "@authlance/postmark": "1.0.0",
+    "@authlance/ui": "1.0.0"
+  },
+  "scripts": {
+    "prepare": "echo 'skip'",
+    "clean": "authlance clean && rimraf errorShots",
+    "build": "authlance-ext copyassets && authlance-ext compile && authlance build --mode development",
+    "build:prod": "authlance-ext copyassets && authlance-ext compile && authlance build --mode production",
+    "watch": "concurrently -n compile,bundle \"authlance-ext watch --preserveWatchOutput\" \"authlance build --watch --mode development\"",
+    "watch:bundle": "authlance-ext compile && authlance build --mode development",
+    "bundle": "authlance build --mode development",
+    "start": "authlance start --plugins=local-dir:../../plugins",
+    "start:browser": "authlance start:browser",
+    "start:debug": "yarn start --log-level=debug",
+    "test": "wdio wdio.conf.js",
+    "test-non-headless": "wdio wdio-non-headless.conf.js",
+    "coverage:compile": "yarn build --config coverage-webpack.config.js",
+    "coverage:remap": "remap-istanbul -i coverage/coverage.json -o coverage/coverage-final.json --exclude 'frontend/index.js' && rimraf coverage/coverage.json",
+    "coverage:report:html": "istanbul report --root coverage --format html",
+    "coverage:report:lcov": "istanbul report --root coverage --format lcov",
+    "coverage": "yarn coverage:compile && yarn test && yarn coverage:remap && yarn coverage:report:lcov && yarn coverage:report:html",
+    "unpublish": "echo 'Package not published, skipping.'"
+  },
+  "devDependencies": {
+    "@authlance/cli": "1.0.0",
+    "@authlance/ext-scripts": "1.0.0",
+    "@tailwindcss/postcss7-compat": "^2.2.17",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.453.0",
+    "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.1",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
+    "mini-css-extract-plugin": "^2.9.2"
+  }
+}

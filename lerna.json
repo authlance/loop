@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/lerna/schemas/lerna-schema.json",
+  "version": "1.0.0",
+  "packages": [
+    "dev-packages/*",
+    "packages/*",
+    "examples/*"
+  ],
+  "useNx": false,
+  "command": {
+    "run": {
+      "stream": true
+    },
+    "publish": {
+      "registry": "https://npm.pkg.github.com/"
+    }
+  }
+}

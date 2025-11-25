@@ -1,0 +1,39 @@
+{
+  "name": "@authlance/payments",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@authlance/common": "1.0.0",
+    "@authlance/core": "1.0.0",
+    "@authlance/events-queue": "1.0.0",
+    "@authlance/sequelize": "1.0.0",
+    "@authlance/identity": "1.0.0",
+    "codename": "^0.0.6",
+    "inversify": "^5.1.1",
+    "jsonwebtoken": "^9.0.0",
+    "sequelize": "^6.6.5"
+  },
+  "loopExtensions": [
+    {
+      "frontend": "lib/browser/front-end-payments-module",
+      "backend": "lib/node/payments-module"
+    }
+  ],
+  "devDependencies": {
+    "@authlance/ext-scripts": "1.0.0",
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "authlance-ext clean",
+    "build": "authlance-ext build",
+    "watch": "authlance-ext watch",
+    "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@authlance/ext-scripts",
+  "version": "1.0.0",
+  "license": "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0",
+  "description": "NPM scripts for Authlance packages.",
+  "files": [
+    "authlance-ext",
+    "authlance-run"
+  ],
+  "bin": {
+    "authlance-ext": "authlance-ext",
+    "authlance-run": "authlance-run",
+    "run": "authlance-run"
+  },
+  "scripts": {
+    "prepare": "echo 'skip'",
+    "clean": "echo 'skip'",
+    "build": "echo 'skip'",
+    "watch": "echo 'skip'",
+    "test": "echo 'skip'",
+    "ext:clean": "authlance-ext compile:clean && authlance-ext test:clean",
+    "ext:build": "concurrently -n compile -c blue,green \"authlance-ext compile\" \"authlance-ext copyassets\" \"authlance-ext lint\"",
+    "ext:compile": "tsc -p compile.tsconfig.json",
+    "ext:compile:clean": "rimraf lib",
+    "ext:lint": "eslint --cache=true --no-error-on-unmatched-pattern=true \"{src,test}/**/*.{ts,tsx}\"",
+    "ext:watch": "tsc -w -p compile.tsconfig.json",
+    "ext:test": "nyc mocha --opts ../../configs/mocha.opts \"./lib/**/*.*spec.js\"",
+    "ext:test:watch": "mocha -w --opts ../../configs/mocha.opts \"./lib/**/*.*spec.js\"",
+    "ext:test:clean": "rimraf .nyc_output && rimraf coverage",
+    "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com",
+    "ext:copyassets": "if [ -d \"src/assets\" ]; then copyfiles -u 1 \"src/assets/**/*\" lib; fi && if [ -d \"src/styles\" ]; then copyfiles -u 1 \"src/styles/**/*\" lib; fi"
+  }
+}

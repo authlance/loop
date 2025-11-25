@@ -1,0 +1,299 @@
+/********************************************************************************
+ * Copyright (C) 2017 TypeFox and others.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License v. 2.0 are satisfied: GNU General Public License, version 2
+ * with the GNU Classpath Exception which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ ********************************************************************************/
+
+import * as paths from 'path';
+import { readJsonFile, writeJsonFile } from './json-file';
+import { NpmRegistry, NodePackage, PublishedNodePackage, sortByKey } from './npm-registry';
+import { Extension, ExtensionPackage, RawExtensionPackage } from './extension-package';
+import { ExtensionPackageCollector } from './extension-package-collector';
+import { ApplicationProps } from './application-props';
+
+// tslint:disable:no-implicit-dependencies
+
+// eslint-disable-line @typescript-eslint/no-explicit-any
+export type ApplicationLog = (message?: any, ...optionalParams: any[]) => void;// eslint-disable-line @typescript-eslint/no-explicit-any
+export class ApplicationPackageOptions {
+    readonly projectPath: string;
+    readonly log?: ApplicationLog;
+    readonly error?: ApplicationLog;
+    readonly registry?: NpmRegistry;
+    readonly appTarget?: ApplicationProps.Target;
+}
+
+export type ApplicationModuleResolver = (modulePath: string) => string;
+
+export class ApplicationPackage {
+    readonly projectPath: string;
+    readonly log: ApplicationLog;
+    readonly error: ApplicationLog;
+
+    constructor(
+        protected readonly options: ApplicationPackageOptions
+    ) {
+        this.projectPath = options.projectPath;
+        this.log = options.log || console.log.bind(console);
+        this.error = options.error || console.error.bind(console);
+    }
+
+    protected _registry: NpmRegistry | undefined;
+    get registry(): NpmRegistry {
+        if (this._registry) {
+            return this._registry;
+        }
+        this._registry = this.options.registry || new NpmRegistry();
+        this._registry.updateProps(this.props);
+        return this._registry;
+    }
+
+    get frontEndBasePath(): string | undefined {
+        const { frontEndBasePath } = this.props.frontend.config;
+        return frontEndBasePath || '/';
+    }
+
+    get backendBasePath(): string | undefined {
+        const { backendBasePath } = this.props.frontend.config
+        return backendBasePath || '/';
+    }
+
+    get docsBasePath(): string | undefined {
+        const { docsBasePath } = this.props.frontend.config;
+        return docsBasePath;
+    }
+
+    get googleAnalyticsMeasurementId(): string | undefined {
+        const { googleAnalyticsMeasurementId } = this.props.frontend.config;
+        return googleAnalyticsMeasurementId;
+    }
+
+    get target(): ApplicationProps.Target {
+        return this.props.target;
+    }
+
+    protected _props: ApplicationProps | undefined;
+    get props(): ApplicationProps {
+        const loop = this.pck.loop || {};
+        const loopConfig = loop?.frontend?.config || {};
+        if (this._props) {
+            if (loopConfig && loopConfig.webApp !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.webApp = loopConfig.webApp;
+            } else {
+                this._props.frontend.config.webApp = false;
+            }
+            if (loopConfig && loopConfig.frontEndModule !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.frontEndModule = loopConfig.frontEndModule;
+            }
+            if (loopConfig && loopConfig.frontEndApp !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.frontEndApp = loopConfig.frontEndApp;
+            }
+            if (loopConfig && loopConfig.bundleName !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.bundleName = loopConfig.bundleName;
+            }
+            if (loopConfig && loopConfig.frontEndBasePath !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.frontEndBasePath = loopConfig.frontEndBasePath;
+            }
+            if (loopConfig && loopConfig.backendBasePath !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.backendBasePath = loopConfig.backendBasePath;
+            }
+            if (loopConfig && loopConfig.docsBasePath !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.docsBasePath = loopConfig.docsBasePath;
+            }
+            if (loopConfig && loopConfig.googleAnalyticsMeasurementId !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.googleAnalyticsMeasurementId = loopConfig.googleAnalyticsMeasurementId;
+            }
+            return this._props;
+        }
+
+        if (this.options.appTarget) {
+            loop.target = this.options.appTarget;
+        }
+
+        const targetProps = { ...ApplicationProps.DEFAULT, ...loop };
+        if (targetProps) {
+            if (loopConfig && loopConfig.webApp !== undefined && targetProps.frontend.config) {
+                targetProps.frontend.config.webApp = loopConfig.webApp;
+            } else {
+                targetProps.frontend.config.webApp = false;
+            }
+        }
+        this._props = targetProps;
+
+        return targetProps;
+    }
+
+    protected _pck: NodePackage | undefined;
+    get pck(): NodePackage {
+        if (this._pck) {
+            return this._pck;
+        }
+        return this._pck = readJsonFile(this.packagePath);
+    }
+
+    protected _frontendModules: Map<string, string> | undefined;
+    protected _backendModules: Map<string, string> | undefined;
+    protected _extensionPackages: ReadonlyArray<ExtensionPackage> | undefined;
+
+    /**
+     * Extension packages in the topological order.
+     */
+    get extensionPackages(): ReadonlyArray<ExtensionPackage> {
+        if (!this._extensionPackages) {
+            const collector = new ExtensionPackageCollector(
+                raw => this.newExtensionPackage(raw),
+                this.resolveModule
+            );
+            this._extensionPackages = collector.collect(this.pck);
+        }
+        return this._extensionPackages;
+    }
+
+    getExtensionPackage(extension: string): ExtensionPackage | undefined {
+        return this.extensionPackages.find(pck => pck.name === extension);
+    }
+
+    async findExtensionPackage(extension: string): Promise<ExtensionPackage | undefined> {
+        return this.getExtensionPackage(extension) || this.resolveExtensionPackage(extension);
+    }
+
+    async resolveExtensionPackage(extension: string): Promise<ExtensionPackage | undefined> {
+        const raw = await RawExtensionPackage.view(this.registry, extension);
+        return raw ? this.newExtensionPackage(raw) : undefined;
+    }
+
+    protected newExtensionPackage(raw: PublishedNodePackage): ExtensionPackage {
+        return new ExtensionPackage(raw, this.registry);
+    }
+
+    get frontendModules(): Map<string, string> {
+        if (!this._frontendModules) {
+            this._frontendModules = this.computeModules('frontend');
+        }
+        return this._frontendModules;
+    }
+
+    get backendModules(): Map<string, string> {
+        if (!this._backendModules) {
+            this._backendModules = this.computeModules('backend');
+        }
+        return this._backendModules;
+    }
+
+    protected computeModules<P extends keyof Extension, S extends keyof Extension = P>(primary: P, secondary?: S): Map<string, string> {
+        const result = new Map<string, string>();
+        let moduleIndex = 1;
+        for (const extensionPackage of this.extensionPackages) {
+            const extensions = extensionPackage.loopExtensions;
+            if (extensions) {
+                for (const extension of extensions) {
+                    const modulePath = extension[primary] || (secondary && extension[secondary]);
+                    if (typeof modulePath === 'string') {
+                        const extensionPath = paths.join(extensionPackage.name, modulePath).split(paths.sep).join('/');
+                        result.set(`${primary}_${moduleIndex}`, extensionPath);
+                        moduleIndex = moduleIndex + 1;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    relative(path: string): string {
+        return paths.relative(this.projectPath, path);
+    }
+
+    path(...segments: string[]): string {
+        return paths.resolve(this.projectPath, ...segments);
+    }
+
+    get packagePath(): string {
+        return this.path('package.json');
+    }
+
+    lib(...segments: string[]): string {
+        return this.path('lib', ...segments);
+    }
+
+    srcGen(...segments: string[]): string {
+        return this.path('src-gen', ...segments);
+    }
+
+    backend(...segments: string[]): string {
+        return this.srcGen('backend', ...segments);
+    }
+
+    prerenderer(...segments: string[]): string {
+        return this.srcGen('prerenderer', ...segments);
+    }
+
+    frontend(...segments: string[]): string {
+        return this.srcGen('frontend', ...segments);
+    }
+
+    isBrowser(): boolean {
+        return this.target === 'browser';
+    }
+
+    ifBrowser<T>(value: T): T | undefined;
+    ifBrowser<T>(value: T, defaultValue: T): T;
+    ifBrowser<T>(value: T, defaultValue?: T): T | undefined {
+        return this.isBrowser() ? value : defaultValue;
+    }
+
+    get targetBackendModules(): Map<string, string> {
+        return this.backendModules;
+    }
+
+    get targetFrontendModules(): Map<string, string> {
+        return this.frontendModules;
+    }
+
+    setDependency(name: string, version: string | undefined): boolean {
+        const dependencies = this.pck.dependencies || {};
+        const currentVersion = dependencies[name];
+        if (currentVersion === version) {
+            return false;
+        }
+        if (version) {
+            dependencies[name] = version;
+        } else {
+            delete dependencies[name];
+        }
+        this.pck.dependencies = sortByKey(dependencies);
+        return true;
+    }
+
+    save(): Promise<void> {
+        return writeJsonFile(this.packagePath, this.pck, {
+            detectIndent: true
+        });
+    }
+
+    protected _moduleResolver: undefined | ApplicationModuleResolver;
+    /**
+     * A node module resolver in the context of the application package.
+     */
+    get resolveModule(): ApplicationModuleResolver {
+        if (!this._moduleResolver) {
+            const resolutionPaths = [this.packagePath || process.cwd()];
+            this._moduleResolver = modulePath => require.resolve(modulePath, { paths: resolutionPaths });
+        }
+        return this._moduleResolver!;
+    }
+
+    resolveModulePath(moduleName: string, ...segments: string[]): string {
+        return paths.resolve(this.resolveModule(moduleName + '/package.json'), '..', ...segments);
+    }
+
+}

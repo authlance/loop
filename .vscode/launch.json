@@ -1,0 +1,58 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+             "name": "Launch Loop",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeExecutable": "/Users/nacho/.nvm/versions/node/v20.6.1/bin/node",
+            "program": "${workspaceRoot}/examples/browser/src-gen/backend/main.js",
+            "cwd": "${workspaceFolder}/examples/browser",
+            "args": [
+                "--hostname=0.0.0.0",
+                "--port=3000",
+                "--config=${workspaceFolder}/nacho-app-config.json"
+            ],
+            "env": {
+                "NODE_ENV": "development",
+                "LOOP_DEBUG": "true",
+                "DEV_PROXY_WEBPACK": "true",
+            },
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+             "name": "Launch Prerender",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeExecutable": "/Users/nacho/.nvm/versions/node/v20.6.1/bin/node",
+            "program": "${workspaceRoot}/examples/browser/src-gen/prerenderer/main.js",
+            "cwd": "${workspaceFolder}/examples/browser",
+            "args": [
+                "--prerender-output",
+                "${workspaceFolder}/examples/browser/prerenderer/output",
+                "--prerender-bundle",
+                "dashboard-bundle.js",
+                "--prerender-base-path",
+                "/dashboard"
+            ],
+            "env": {
+                "AUTH_URL": "https://local.nmorenor.com",
+                "API_URL": "https://local.nmorenor.com/authlance/loop"
+            },
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+        }
+    ]
+}
