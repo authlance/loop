@@ -1,0 +1,30 @@
+{
+  "name": "@authlance/cli",
+  "version": "1.0.0",
+  "description": "Theia CLI.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0",
+  "files": [
+    "bin",
+    "lib",
+    "src"
+  ],
+  "bin": {
+    "authlance": "./bin/authlance"
+  },
+  "scripts": {
+    "prepare": "echo 'skip'",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "yarn build -w",
+    "test": "echo 'skip'",
+    "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@authlance/application-manager": "1.0.0",
+    "@authlance/application-package": "1.0.0",
+    "yargs": "^15.3.1"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@authlance/sequelize",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "@authlance/core": "1.0.0",
+    "@ory/client": "^1.22.1",
+    "@reduxjs/toolkit": "^1.9.6",
+    "@tanstack/react-table": "^8.20.6",
+    "classnames": "^2.5.1",
+    "connect-session-sequelize": "^7.1.0",
+    "inversify": "^5.1.1",
+    "jsonwebtoken": "^9.0.0",
+    "lucide-react": "^0.471.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-dropzone": "^14.3.5",
+    "react-router": "^7.0.0",
+    "react-router-dom": "^7.0.0",
+    "@remix-run/router": "^1.23.0",
+    "sequelize": "^6.6.5",
+    "tailwindcss": "^3.4.1",
+    "mysql2": "^3.11.3"
+  },
+  "loopExtensions": [
+    {
+      "backend": "lib/node/back-end-sequelize-module"
+    }
+  ],
+  "devDependencies": {
+    "@authlance/ext-scripts": "1.0.0",
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "authlance-ext clean",
+    "build": "authlance-ext build",
+    "watch": "authlance-ext watch",
+    "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
+  }
+}

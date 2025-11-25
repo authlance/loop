@@ -1,0 +1,12 @@
+NOTICE
+
+This repository contains source files derived from Eclipse Theia,
+licensed under the Eclipse Public License 2.0.
+
+All Theia-derived files include their own EPL headers.
+
+To comply with EPL Section 3.3(c), all modified EPL-derived files are packaged
+via package-epl-sources.sh into epl-source-bundle.zip.
+
+Authlance-owned source files are licensed under the Business Source License
+(BSL 1.1). See LICENSE-BSL for details.

@@ -1,0 +1,33 @@
+{
+  "name": "@authlance/common",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.6.1",
+    "inversify": "^5.1.1",
+    "express": "^4.16.3"
+  },
+  "loopExtensions": [
+    {
+      "frontend": "lib/browser/front-end-common-module",
+      "backend": "lib/node/back-end-common-module"
+    }
+  ],
+  "devDependencies": {
+    "@authlance/ext-scripts": "1.0.0",
+    "typescript": "^5.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "authlance-ext clean",
+    "build": "yarn run clean && authlance-ext build",
+    "watch": "authlance-ext watch",
+    "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
+  }
+}

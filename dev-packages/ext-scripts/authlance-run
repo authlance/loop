@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+/********************************************************************************
+ * Copyright (C) 2017 TypeFox and others.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License v. 2.0 are satisfied: GNU General Public License, version 2
+ * with the GNU Classpath Exception which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ ********************************************************************************/
+// @ts-check
+const path = require('path');
+const fs = require('fs');
+
+const index = process.argv.findIndex(arg => arg.includes('run'));
+const args = process.argv.slice(index + 1);
+
+let command = args[0];
+let remaining = args.slice(1);
+
+let scopedArgs = [command];
+let nextIsScope = true;
+
+for (let i = 0; i < remaining.length; i++) {
+    const arg = remaining[i];
+    if (arg === '--ignore') {
+        scopedArgs.push('--ignore', remaining[i + 1]);
+        i++; // skip next
+    } else {
+        if (nextIsScope) scopedArgs.push('--scope');
+        scopedArgs.push(arg);
+    }
+}
+
+process.argv = [...process.argv.slice(0, index + 1), 'run', ...scopedArgs];
+
+const lernaScriptPath = path.resolve(__dirname, '..', '..', 'scripts', 'lerna.js');
+// Content of the file to be created
+const lernaScriptContent = `const lernaPath = require.resolve('lerna/cli');
+
+if (process.platform === 'win32') {
+    if (process.argv.indexOf('--concurrency=1') === -1) {
+        process.argv.push('--concurrency=1');
+    }
+    const parallelIndex = process.argv.indexOf('--parallel');
+    if (parallelIndex !== -1) {
+        process.argv[parallelIndex] = '--stream';
+    }
+    console.log('Running lerna as: ' + process.argv.join(' '));
+}
+if (process.argv.indexOf('--reject-cycles') === -1) {
+    const doubleDash = process.argv.indexOf('--');
+    const insertAt = doubleDash === -1 ? process.argv.length : doubleDash;
+    process.argv.splice(insertAt, 0, '--reject-cycles');
+}
+require(lernaPath);`;
+
+if (!fs.existsSync(lernaScriptPath)) {
+    fs.mkdirSync(path.dirname(lernaScriptPath), { recursive: true }); // Create directories if not exist
+    fs.writeFileSync(lernaScriptPath, lernaScriptContent);
+    console.log(`Created missing file: ${lernaScriptPath}`);
+} else {
+    console.log(`File already exists: ${lernaScriptPath}`);
+}
+
+require(path.resolve(__dirname, '..', '..', 'scripts', 'lerna'));

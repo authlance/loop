@@ -1,0 +1,110 @@
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: DUNA_LOOP_REPOSITORY
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+  # Optional - set to override the image tag, e.g. "sha256:1234567890"
+  digest: ""
+
+#
+# Configure the source location for the Docker image, using the
+# credentials provided by your CodeTogether Sales Representative.
+#
+imageCredentials:
+  # pullSecret: "my-customer-pull-secret"
+  # Use pullSecret or configure credentials if using private Docker registry.
+  enabled: true
+  registry: registry.digitalocean.com
+  username: DUNA_LOOP_REGISTRY_USER
+  password: DUNA_LOOP_REGISTRY_PASSWORD
+  email: unused
+
+duna:
+  url: https://DUNA_LOOP_HOSTNAME
+  basePath: DUNA_LOOP_BASE_PATH
+  frontEndBasePath: DUNA_LOOP_FRONTEND_BASE_PATH
+  configSecret: DUNA_LOOP_CONFIG_SECRET
+
+#
+# Enables and configures Ingress (default = Nginx). The className value can be used
+# to change the default behavior. Please read the comments below to see details.
+#
+ingress:
+  enabled: true
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: DUNA_LOOP_HOSTNAME
+  className: nginx
+  tls:
+    - secretName: DUNA_LOOP_TLS_SECRET
+
+#
+# The following sections provide default configurations for the
+# container and normally do not need to be modified.
+# -------------------------------------------------------------------------
+#
+service:
+  type: ClusterIP
+  port: 1080
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "duna-loop"
+
+podAnnotations: {}
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  timeoutSeconds: 15
+  successThreshold: 1
+  failureThreshold: 1
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  timeoutSeconds: 15
+  successThreshold: 1
+  failureThreshold: 1
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+#
+# Configures a periodic restart of the duna server in the running container.
+#
+# @since 2022.2.2-1381
+#
+restart:
+  enabled: true
+  # by default restart is scheduled on every Sunday 11 AM
+  cronPattern: "* 11 * * 0"
+
+#
+# Configures the duna server to use a custom favicon.
+favicon:
+  enabled: true
+  filePath: files/favicon.ico
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi 
