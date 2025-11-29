@@ -1,6 +1,6 @@
 {
   "name": "@authlance/ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -38,16 +38,17 @@
     "tailwind-merge": "^2.5.4",
     "zod": "^3.24.1"
   },
+  "main": "lib/browser/index.js",
+  "module": "lib/browser/index.js",
   "devDependencies": {
-    "@authlance/ext-scripts": "1.0.0",
+    "@authlance/ext-scripts": "^1.0.1",
     "typescript": "^5.4.5"
   },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
     "clean": "authlance-ext clean && rimraf dist",

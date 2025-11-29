@@ -49,7 +49,7 @@ const argv: GeneratorArgs = {
     appTarget: rawArgv.appTarget === 'browser' ? 'browser' : undefined
 };
 const mode: 'development' | 'production' = argv.mode === 'development' ? 'development' : 'production';
-const splitFrontend: boolean = argv['split-frontend'] === undefined ? mode === 'development' : argv['split-frontend'];
+const splitFrontend: boolean = argv['split-frontend'] === undefined ? false : argv['split-frontend'];
 
 export abstract class AbstractGenerator {
 

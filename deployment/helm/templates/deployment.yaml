@@ -45,6 +45,12 @@ spec:
               mountPath: /app/favicon.ico
               subPath: favicon.ico
           {{- end }}
+          {{- if .Values.robotstxt.enabled }}
+            - name: robotstxt-volume
+              mountPath: /app/robots.txt
+              subPath: robots.txt
+              readOnly: true
+          {{- end }}
             - name: {{ include "duna.fullname" . }}-config-volume
               mountPath: /app/app-config.json
               subPath: app-config.json
@@ -85,6 +91,11 @@ spec:
         - name: favicon-volume
           configMap:
             name: {{ .Release.Name }}-favicon
+      {{- end }}
+      {{- if .Values.robotstxt.enabled }}
+        - name: robotstxt-volume
+          configMap:
+            name: {{ include "duna.fullname" . }}-robotstxt
       {{- end }}
         - name:  {{ include "duna.fullname" . }}-config-volume
           secret:

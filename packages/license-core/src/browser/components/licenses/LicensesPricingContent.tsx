@@ -343,9 +343,9 @@ export const LicensesPricingContent: React.FC = () => {
         if (typeof window === 'undefined') {
             return
         }
-        const next = window.location.pathname || '/licenses/pricing'
+        const next = window.location.pathname || '/pricing'
         const baseUrl = `${window.location.protocol}//${window.location.host}`
-        const returnTo = `${baseUrl}?next=${next}`
+        const returnTo = `${baseUrl}${next}`
         window.location.href = `/login?return_to=${encodeURIComponent(returnTo)}`
     }, [])
 
@@ -360,7 +360,7 @@ export const LicensesPricingContent: React.FC = () => {
             if (creatingCheckoutFor) {
                 return
             }
-            if (!paymentsApi) {
+            if (!paymentsApi || !user) {
                 redirectToLogin()
                 return
             }
@@ -444,7 +444,7 @@ export const LicensesPricingContent: React.FC = () => {
                 setCreatingCheckoutFor(null)
             }
         },
-        [creatingCheckoutFor, trimmedGroup, groupDetails?.longName, paymentsApi, toast, redirectToLogin]
+        [creatingCheckoutFor, trimmedGroup, groupDetails?.longName, paymentsApi, user, toast, redirectToLogin]
     )
 
     if (isLoading && !products) {

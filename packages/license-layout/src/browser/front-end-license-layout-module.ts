@@ -1,5 +1,5 @@
 import { ContainerModule } from 'inversify'
-import { FrontendSideBarApplication } from './front-end-sidebar-application'
+import { FrontendSideBarApplication } from './front-end-licesne-layout-application'
 import { FrontendApplicationContribution } from '@authlance/core/lib/browser/frontend-contribution'
 import { DashboardContentProvider } from '@authlance/core/lib/browser/common/ui-contributions'
 import { DashboardContentProviderImpl } from './hooks/useDashboardContent'

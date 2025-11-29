@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@authlance/browser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0",
   "loop": {
     "frontend": {
@@ -18,15 +18,15 @@
     "lib"
   ],
   "dependencies": {
-    "@authlance/common": "1.0.0",
-    "@authlance/core": "1.0.0",
-    "@authlance/sidebar": "1.0.0",
-    "@authlance/events-queue": "1.0.0",
-    "@authlance/identity": "1.0.0",
-    "@authlance/sequelize": "1.0.0",
-    "@authlance/payments": "1.0.0",
-    "@authlance/postmark": "1.0.0",
-    "@authlance/ui": "1.0.0"
+    "@authlance/common": "^1.0.1",
+    "@authlance/core": "^1.0.1",
+    "@authlance/events-queue": "^1.0.1",
+    "@authlance/identity": "^1.0.1",
+    "@authlance/payments": "^1.0.1",
+    "@authlance/postmark": "^1.0.1",
+    "@authlance/sequelize": "^1.0.1",
+    "@authlance/sidebar": "^1.0.1",
+    "@authlance/ui": "^1.0.1"
   },
   "scripts": {
     "prepare": "echo 'skip'",
@@ -49,18 +49,18 @@
     "unpublish": "echo 'Package not published, skipping.'"
   },
   "devDependencies": {
-    "@authlance/cli": "1.0.0",
-    "@authlance/ext-scripts": "1.0.0",
+    "@authlance/cli": "^1.0.1",
+    "@authlance/ext-scripts": "^1.0.1",
     "@tailwindcss/postcss7-compat": "^2.2.17",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.453.0",
+    "mini-css-extract-plugin": "^2.9.2",
     "postcss": "^8.4.47",
     "postcss-loader": "^8.1.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^3.4.1",
-    "tailwindcss-animate": "^1.0.7",
-    "mini-css-extract-plugin": "^2.9.2"
+    "tailwindcss-animate": "^1.0.7"
   }
 }

@@ -101,6 +101,11 @@ favicon:
   enabled: true
   filePath: files/favicon.ico
 
+robotstxt:
+  enabled: true
+  content: |-
+    User-agent: *
+
 resources:
   limits:
     cpu: 300m
