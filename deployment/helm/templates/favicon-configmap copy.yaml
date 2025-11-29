@@ -1,0 +1,8 @@
+{{- if .Values.favicon.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "duna.fullname" . }}-favicon
+binaryData:
+  favicon.ico: {{ .Files.Get .Values.favicon.filePath | b64enc }}
+{{- end }}

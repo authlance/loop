@@ -1,14 +1,15 @@
 {
   "name": "@authlance/identity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "dependencies": {
-    "@authlance/core": "1.0.0",
-    "@authlance/ui": "1.0.0",
-    "@authlance/common": "1.0.0",
+    "@authlance/common": "^1.0.1",
+    "@authlance/core": "^1.0.1",
+    "@authlance/ui": "^1.0.1",
     "@ory/client": "^1.22.1",
     "@ory/elements-react": "1.1.0",
     "@reduxjs/toolkit": "^1.9.6",
+    "@remix-run/router": "^1.23.0",
     "@tanstack/react-table": "^8.20.6",
     "classnames": "^2.5.1",
     "inversify": "^5.1.1",
@@ -20,9 +21,9 @@
     "react-dropzone": "^14.3.5",
     "react-router": "^7.0.0",
     "react-router-dom": "^7.0.0",
-    "@remix-run/router": "^1.23.0",
     "tailwindcss": "^3.4.1"
   },
+  "module": "lib/browser/front-end-identity-module.js",
   "loopExtensions": [
     {
       "frontend": "lib/browser/front-end-identity-module",
@@ -30,15 +31,14 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "1.0.0",
+    "@authlance/ext-scripts": "^1.0.1",
     "typescript": "^5.4.5"
   },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
     "clean": "authlance-ext clean",

@@ -33,6 +33,7 @@ export class WebpackGenerator extends AbstractGenerator {
 
     protected compileWebpackConfig(): string {
         const bundleFileName = this.pck.props.frontend.config.bundleName ? this.pck.props.frontend.config.bundleName : 'bundle.js';
+        const entryName = bundleFileName.endsWith('.js') ? bundleFileName.slice(0, -3) : bundleFileName;
         return `// @ts-check
 const path = require('path');
 const webpack = require('webpack');
@@ -42,7 +43,10 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const DotenvWebpackPlugin = require('dotenv-webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { LimitChunkCountPlugin } = webpack.optimize;
 
 const outputPath = path.resolve(__dirname, 'lib');
 const { mode, staticCompression }  = yargs.option('mode', {
@@ -77,6 +81,26 @@ const plugins = [
       path: './.env',
     }),
     // new BundleAnalyzerPlugin(),
+    new WebpackManifestPlugin({
+        fileName: 'manifest.json',
+        publicPath: '',
+        generate: (seed, files, entrypoints) => {
+            const manifestFiles = files.reduce((manifest, file) => {
+                manifest[file.name] = file.path;
+                return manifest;
+            }, seed);
+            return {
+                ...manifestFiles,
+                entrypoints: entrypoints,
+            };
+        },
+    }),
+    new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: path.resolve(__dirname, 'src-gen/frontend/index.html'),
+        inject: true,
+        chunks: ['${entryName}'],
+    }),
 ];
 // it should go after copy-plugin in order to compress monaco as well
 if (staticCompression) {
@@ -87,19 +111,40 @@ plugins.push(new CircularDependencyPlugin({
     failOnError: false // https://github.com/nodejs/readable-stream/issues/280#issuecomment-297076462
 }));
 plugins.push(new MiniCssExtractPlugin({
-    filename: cssFileName,
-    chunkFilename: '[name].[contenthash:8].css',
+    filename: '[name].css',
+    chunkFilename: '[name].[contenthash].css',
+    ignoreOrder: true,
 }));
 
 module.exports = {
     mode,
     plugins,
     devtool: 'source-map',
-    entry: path.resolve(__dirname, 'src-gen/frontend/index.js'),
+    entry: {
+        '${entryName}': path.resolve(__dirname, 'src-gen/frontend/index.js')
+    },
     output: {
-        filename: bundleName,
+        filename: '[name].js',
+        chunkFilename: '[name].[contenthash:8].chunk.js',
         path: outputPath,
-        devtoolModuleFilenameTemplate: 'webpack:///[resource-path]?[loaders]'
+        devtoolModuleFilenameTemplate: 'webpack:///[resource-path]?[loaders]',
+        publicPath: 'auto',
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            minSize: 200000,
+            maxSize: 500000,
+            cacheGroups: {
+                defaultVendors: {
+                    test: /[\\\\/]node_modules[\\\\/]/,
+                    chunks: 'all',
+                    priority: -10,
+                    reuseExistingChunk: true,
+                },
+            },
+        },
+        runtimeChunk: 'single',
     },
     devServer: {
         static: outputPath,
@@ -115,7 +160,7 @@ module.exports = {
         }
     },
     target: 'web',
-    cache: staticCompression,
+    cache: staticCompression ? { type: 'memory' } : false,
     module: {
         rules: [
             {
@@ -131,8 +176,28 @@ module.exports = {
             },
             {
                 test: /\\.css$/,
-                exclude: /materialcolors\\.css$|\\.useable\\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
+                oneOf: [
+                    {
+                        include: [
+                            /node_modules/
+                        ],
+                        exclude: /materialcolors\\.css$|\\.useable\\.css$/,
+                        use: [MiniCssExtractPlugin.loader, 'css-loader']
+                    },
+                    {
+                        include: [
+                            path.resolve(__dirname, 'lib/styles'),
+                            path.resolve(__dirname, 'src'),
+                            path.resolve(__dirname, 'src-gen'),
+                        ],
+                        exclude: /materialcolors\\.css$|\\.useable\\.css$/,
+                        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
+                    },
+                    {
+                        exclude: /materialcolors\\.css$|\\.useable\\.css$/,
+                        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
+                    }
+                ]
             },
             {
                 test: /materialcolors\\.css$|\\.useable\\.css$/,
@@ -218,8 +283,7 @@ module.exports = {
                 test: /\\.js$/,
                 // include only es6 dependencies to transpile them to es5 classes
                 include: [
-                    /monaco-languageclient|vscode-ws-jsonrpc|vscode-jsonrpc|vscode-languageserver-protocol|vscode-languageserver-types|vscode-languageclient/,
-                    path.resolve(__dirname, '../../packages')
+                    /monaco-languageclient|vscode-ws-jsonrpc|vscode-jsonrpc|vscode-languageserver-protocol|vscode-languageserver-types|vscode-languageclient/
                 ],
                 use: {
                     loader: 'babel-loader',

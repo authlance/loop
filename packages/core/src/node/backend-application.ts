@@ -492,7 +492,11 @@ export class BackendApplication {
 
     protected async tryRenderHtml(req: express.Request, res: express.Response): Promise<boolean> {
         try {
-            const html = await this.htmlRenderer.render(req, this.appConfigProvider.config)
+            const configWithStaticPath = {
+                ...this.appConfigProvider.config,
+                staticFilesPath: this.staticFilesPath
+            }
+            const html = await this.htmlRenderer.render(req, configWithStaticPath)
             if (html) {
                 res.type('html').send(html)
                 return true

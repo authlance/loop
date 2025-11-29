@@ -1,12 +1,13 @@
 {
   "name": "@authlance/common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "dependencies": {
     "axios": "^1.6.1",
-    "inversify": "^5.1.1",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "inversify": "^5.1.1"
   },
+  "module": "lib/browser/front-end-common-module.js",
   "loopExtensions": [
     {
       "frontend": "lib/browser/front-end-common-module",
@@ -14,15 +15,14 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "1.0.0",
+    "@authlance/ext-scripts": "^1.0.1",
     "typescript": "^5.4.5"
   },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
     "clean": "authlance-ext clean",

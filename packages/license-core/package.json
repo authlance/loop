@@ -1,14 +1,14 @@
 {
   "name": "@authlance/license-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "dependencies": {
-    "@authlance/common": "1.0.0",
-    "@authlance/core": "1.0.0",
-    "@authlance/events-queue": "1.0.0",
-    "@authlance/ui": "1.0.0",
-    "@authlance/sequelize": "1.0.0",
-    "@authlance/identity": "1.0.0",
+    "@authlance/common": "^1.0.1",
+    "@authlance/core": "^1.0.1",
+    "@authlance/events-queue": "^1.0.1",
+    "@authlance/identity": "^1.0.1",
+    "@authlance/sequelize": "^1.0.1",
+    "@authlance/ui": "^1.0.1",
     "@tanstack/react-query": "4.13.0",
     "codename": "^0.0.6",
     "inversify": "^5.1.1",
@@ -16,6 +16,7 @@
     "lucide-react": "^0.471.0",
     "sequelize": "^6.6.5"
   },
+  "module": "lib/browser/front-end-core-module.js",
   "loopExtensions": [
     {
       "frontend": "lib/browser/front-end-core-module",
@@ -23,15 +24,14 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "1.0.0",
+    "@authlance/ext-scripts": "^1.0.1",
     "typescript": "^5.4.5"
   },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
     "clean": "authlance-ext clean",

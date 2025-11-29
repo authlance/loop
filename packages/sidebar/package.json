@@ -1,11 +1,11 @@
 {
   "name": "@authlance/sidebar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "dependencies": {
-    "@authlance/common": "1.0.0",
-    "@authlance/core": "1.0.0",
-    "@authlance/ui": "1.0.0",
+    "@authlance/common": "^1.0.1",
+    "@authlance/core": "^1.0.1",
+    "@authlance/ui": "^1.0.1",
     "@remix-run/router": "^1.23.0",
     "@tanstack/react-query": "4.13.0",
     "@tanstack/react-query-devtools": "4.13.0",
@@ -20,13 +20,14 @@
     "react-router-hash-link": "^2.4.3",
     "semver": "^7.6.3"
   },
+  "module": "lib/browser/front-end-license-layout-module.js",
   "loopExtensions": [
     {
       "frontend": "lib/browser/front-end-sidebar-module"
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "1.0.0",
+    "@authlance/ext-scripts": "^1.0.1",
     "@types/react-router-hash-link": "^2.4.9",
     "typescript": "^5.4.5"
   },
@@ -34,8 +35,7 @@
     "access": "public"
   },
   "files": [
-    "lib",
-    "src"
+    "lib"
   ],
   "scripts": {
     "clean": "authlance-ext clean",

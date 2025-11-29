@@ -40,16 +40,12 @@ export class FrontendGenerator extends AbstractGenerator {
     }
 
     protected compileIndexHtml(frontendModules: Map<string, string>): string {
-        const bundleName = this.pck.props.frontend.config.bundleName ? this.pck.props.frontend.config.bundleName : 'bundle.js';
-        const cssBundleName = this.resolveCssBundleName(bundleName);
         const basePath = this.resolveBasePath();
-        const scriptSrc = this.joinAssetPath(basePath, bundleName);
-        const stylesheetHref = cssBundleName ? this.joinAssetPath(basePath, cssBundleName) : undefined;
 
         const extraStylesheets = this.normalizeStylesheetConfig(this.pck.props.frontend.config.frontEndStylesheets)
             .map(entry => this.joinAssetPath(basePath, entry));
 
-        const stylesheetMarkup = [stylesheetHref, ...extraStylesheets]
+        const stylesheetMarkup = extraStylesheets
             .filter((href): href is string => Boolean(href))
             .map(href => `  <link rel="stylesheet" href="${href}" />`)
             .join('\n');
@@ -61,7 +57,6 @@ export class FrontendGenerator extends AbstractGenerator {
 
 <head>${this.compileIndexHead(frontendModules)}
 ${stylesSection}
-  <script type="text/javascript" src="${scriptSrc}" charset="utf-8"></script>
 </head>
 
 <body class="h-full">

@@ -1,5 +1,7 @@
 import express from 'express'
 import React from 'react'
+import * as fs from 'fs-extra'
+import * as path from 'path'
 import { dehydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { inject, injectable, interfaces, LazyServiceIdentifer } from 'inversify'
 import { createMemoryRouter, matchPath, RouterProvider } from 'react-router-dom'
@@ -59,6 +61,7 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
     protected prerenderCacheResolved = false
     protected resolvedPrerenderCache: PrerenderCache | undefined
     private noopPrerenderCache: PrerenderCache | undefined
+    protected manifestCache: { [path: string]: { mtime: number, content: any } } = {};
 
     constructor(
         @inject(ServerRenderContainer) protected readonly containerProvider: ServerRenderContainerProvider,
@@ -106,10 +109,11 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         const dehydratedState = dehydrate(queryClient)
         const serializedQueryState = this.serialize(dehydratedState)
         const serializedStoreState = this.serialize(this.createSerializableStoreState(store))
+        const manifest = await this.resolveManifest(config)
 
         queryClient.clear()
 
-        return this.composeDocument(markup, serializedStoreState, serializedQueryState, config, documentDefinition)
+        return this.composeDocument(markup, serializedStoreState, serializedQueryState, config, documentDefinition, manifest)
     }
 
     protected resolvePersonalAccessToken(config: ApplicationConfig): string {
@@ -407,34 +411,148 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         return normalized
     }
 
-    protected composeDocument(markup: string, storeState: string, queryState: string, config: ApplicationConfig, document?: NormalizedRouteDocumentDefinition): string {
-        const bundleName = config.frontEndBundleName ?? 'dashboard-bundle.js'
+    protected composeDocument(markup: string, storeState: string, queryState: string, config: ApplicationConfig, document?: NormalizedRouteDocumentDefinition, manifest?: any): string {
+        const bundleName = this.resolveBundleName(config, manifest)
         const basePath = config.frontEndBasePath
         const defaultTitle = typeof config.applicationName === 'string' && config.applicationName.trim().length > 0
             ? config.applicationName
             : 'Loop'
         const resolvedTitle = document?.title ?? defaultTitle
-        const scriptPath = this.resolveScriptPath(basePath, bundleName)
-        const stylesheetHrefs = this.collectStylesheets(config, basePath, bundleName)
+        
+        let scriptTags = '';
+        let debugScripts: string[] = [];
+        const stylesheetHrefs: string[] = [];
+
+        if (manifest) {
+            const entryName = bundleName.endsWith('.js') ? bundleName.slice(0, -3) : bundleName;
+            const entrypointFiles = manifest.entrypoints?.[entryName];
+            if (!entrypointFiles) {
+                const available = Object.keys(manifest.entrypoints || {});
+                console.warn(`SSR manifest entrypoint '${entryName}' not found. Available: ${available.join(', ')}`);
+            } else {
+                const scripts = entrypointFiles.filter((file: string) => file.endsWith('.js'));
+                const styles = entrypointFiles.filter((file: string) => file.endsWith('.css'));
+
+                // Ensure runtime.js is included and comes first
+                const runtimeFilename = manifest['runtime.js'];
+                if (runtimeFilename && !scripts.includes(runtimeFilename)) {
+                    scripts.unshift(runtimeFilename);
+                }
+                
+                const cssOnlyChunks: string[] = [];
+                styles.forEach((style: string) => {
+                    if (style.endsWith('.css')) {
+                        const chunkName = style.slice(0, -4);
+                        const hasJs = scripts.some(s => s === chunkName + '.js');
+                        if (!hasJs) {
+                            cssOnlyChunks.push(chunkName);
+                        }
+                    }
+                });
+
+                scriptTags = scripts.map((script: string) => {
+                    const scriptPath = this.resolveScriptPath(basePath, script);
+                    debugScripts.push(scriptPath);
+                    return `<script defer src="${scriptPath}" charset="utf-8"></script>`;
+                }).join('\n    ');
+
+                if (cssOnlyChunks.length > 0) {
+                    const fixScript = `<script>
+    (self.webpackChunk_authlance_browser = self.webpackChunk_authlance_browser || []).push([${JSON.stringify(cssOnlyChunks)}, {}, function(){}]);
+</script>`;
+                    scriptTags = fixScript + '\n    ' + scriptTags;
+                }
+
+                // Add manifest styles if not already present
+                styles.forEach((style: string) => {
+                        const stylePath = this.resolveStylesheetPath(basePath, style);
+                        if (!stylesheetHrefs.includes(stylePath)) {
+                            stylesheetHrefs.push(stylePath);
+                        }
+                });
+            }
+        }
+
+        if (!scriptTags && config.staticFilesPath) {
+            const indexAssets = this.loadAssetsFromIndex(config.staticFilesPath);
+            if (indexAssets?.scripts.length) {
+                scriptTags = indexAssets.scripts.map(script => {
+                    const resolved = this.resolveScriptPath(basePath, script);
+                    debugScripts.push(resolved);
+                    return `<script defer src="${resolved}" charset="utf-8"></script>`;
+                }).join('\n    ');
+            }
+            if (indexAssets?.styles.length) {
+                indexAssets.styles.forEach(style => {
+                    const stylePath = this.resolveStylesheetPath(basePath, style);
+                    if (!stylesheetHrefs.includes(stylePath)) {
+                        stylesheetHrefs.push(stylePath);
+                    }
+                });
+            }
+        }
+
+        if (stylesheetHrefs.length === 0) {
+             const defaultStyles = this.collectStylesheets(config, basePath, bundleName);
+             stylesheetHrefs.push(...defaultStyles);
+        }
+
+        if (!scriptTags) {
+             // Fallback to old behavior
+            const scriptPath = this.resolveScriptPath(basePath, bundleName)
+            const runtimePath = this.resolveScriptPath(basePath, 'runtime.js')
+            scriptTags = `<script src="${runtimePath}" charset="utf-8"></script>
+    <script src="${scriptPath}" charset="utf-8"></script>`;
+            debugScripts = [runtimePath, scriptPath];
+        }
+
         const stylesheetMarkup = stylesheetHrefs.length
             ? `\n    ${stylesheetHrefs.map(href => `<link rel="stylesheet" href="${href}" />`).join('\n    ')}`
             : ''
         const metaMarkup = this.renderMetaTags(document?.meta)
         const linkMarkup = this.renderLinkTags(document?.links)
-
         return `<!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${this.escapeHtml(resolvedTitle)}</title>${metaMarkup}${linkMarkup}${stylesheetMarkup}
+    ${scriptTags}
 </head>
 <body class="h-full">
     <div id="loop-preload" class="h-full min-h-screen">${markup}</div>
     <script>window.__PRERENDER_STORE__=${storeState};window.__PRERENDER_QUERY__=${queryState};</script>
-    <script src="${scriptPath}" charset="utf-8"></script>
 </body>
 </html>`
+    }
+
+    protected getManifest(staticFilesPath: string): any | undefined {
+        const manifestPath = path.join(staticFilesPath, 'manifest.json');
+        try {
+            // In production, we assume the manifest doesn't change, so we can cache it indefinitely.
+            // In development, we check the mtime to see if it has changed.
+            const isProduction = process.env.NODE_ENV !== 'development';
+            const cached = this.manifestCache[manifestPath];
+
+            if (isProduction && cached) {
+                return cached.content;
+            }
+
+            const stats = fs.statSync(manifestPath);
+            if (cached && cached.mtime === stats.mtimeMs) {
+                return cached.content;
+            }
+
+            const content = fs.readJsonSync(manifestPath);
+            this.manifestCache[manifestPath] = {
+                mtime: stats.mtimeMs,
+                content
+            };
+            return content;
+        } catch (e) {
+            console.warn('Failed to read manifest.json at', manifestPath, e);
+            return undefined;
+        }
     }
 
     protected renderMetaTags(entries?: NormalizedRouteDocumentTag[]): string {
@@ -491,6 +609,7 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         const configured = this.normalizeStylesheetConfig(config.frontEndStylesheets)
         const derived = this.deriveCssBundleName(bundleName)
         const resolved: string[] = []
+        
         if (derived) {
             resolved.push(this.resolveStylesheetPath(basePath, derived))
         }
@@ -543,6 +662,82 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         const trimmed = basePath.replace(/\/+$/, '')
         const withLeadingSlash = trimmed.startsWith('/') ? trimmed : `/${trimmed}`
         return `${withLeadingSlash}/${normalizedHref}`.replace(/\/{2,}/g, '/').replace(/\/$/, '')
+    }
+
+    protected async resolveManifest(config: ApplicationConfig): Promise<any | undefined> {
+        const devProxyEnabled = process.env.DEV_PROXY_WEBPACK === 'true'
+        const devServerUrl = process.env.WEBPACK_DEV_SERVER_URL || 'http://localhost:3002'
+        if (devProxyEnabled) {
+            const devManifest = await this.getManifestFromDevServer(devServerUrl)
+            if (devManifest) {
+                return devManifest
+            }
+        }
+        if (config.staticFilesPath) {
+            return this.getManifest(config.staticFilesPath)
+        }
+        return undefined
+    }
+
+    protected async getManifestFromDevServer(devServerUrl: string): Promise<any | undefined> {
+        try {
+            const url = `${devServerUrl.replace(/\/+$/, '')}/manifest.json`
+            const fetchImpl = (global as any).fetch ?? (await import('node-fetch')).default
+            if (!fetchImpl) {
+                return undefined
+            }
+            const response = await fetchImpl(url, { cache: 'no-store' } as any)
+            if (!response.ok) {
+                return undefined
+            }
+            return await response.json()
+        } catch (error) {
+            console.warn('Failed to fetch dev-server manifest from', devServerUrl, error)
+            return undefined
+        }
+    }
+
+    protected resolveBundleName(config: ApplicationConfig, manifest?: any): string {
+        const configured = typeof config.frontEndBundleName === 'string' ? config.frontEndBundleName.trim() : undefined
+        if (configured && configured.length > 0) {
+            return configured
+        }
+        if (manifest?.entrypoints) {
+            const [firstEntry] = Object.keys(manifest.entrypoints)
+            if (firstEntry) {
+                return firstEntry.endsWith('.js') ? firstEntry : `${firstEntry}.js`
+            }
+        }
+        return 'dashboard-bundle.js'
+    }
+
+    protected loadAssetsFromIndex(staticFilesPath: string): { scripts: string[], styles: string[] } | undefined {
+        const indexPath = path.join(staticFilesPath, 'index.html')
+        if (!fs.existsSync(indexPath)) {
+            return undefined
+        }
+        try {
+            const content = fs.readFileSync(indexPath, 'utf8')
+            const scriptRegex = /<script[^>]+src=["']([^"']+)["'][^>]*><\/script>/gi
+            const linkRegex = /<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["'][^>]*>/gi
+            const scripts: string[] = []
+            const styles: string[] = []
+            let match: RegExpExecArray | null
+            while ((match = scriptRegex.exec(content)) !== null) {
+                if (match[1]) {
+                    scripts.push(match[1])
+                }
+            }
+            while ((match = linkRegex.exec(content)) !== null) {
+                if (match[1]) {
+                    styles.push(match[1])
+                }
+            }
+            return { scripts, styles }
+        } catch (error) {
+            console.warn('SSR: Failed to parse index.html for assets', error)
+            return undefined
+        }
     }
 
     protected serialize(value: unknown): string {
