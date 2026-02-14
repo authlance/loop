@@ -7,3 +7,9 @@ examples/*/webpack.config.js
 yarn-error.log
 lerna-debug.log
 .env
+.DS_Store
+.eslintcache
+git_push.sh
+.openapi-generator-ignore
+.openapi-generator
+nacho-app-config.json

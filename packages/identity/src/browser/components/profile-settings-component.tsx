@@ -187,6 +187,7 @@ const useUtcDate = (date: string | undefined) => {
 }
 
 const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
+    const navigate = useNavigate()
     const [name, setName] = useState(user.firstName ? user.firstName : '')
     const [lastName, setLastName] = useState(user.lastName ? user.lastName : '')
     const [email] = useState(user.email)
@@ -363,6 +364,20 @@ const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                    <RenderIf isTrue={requestor?.identity === user.identity && user.verified !== true}>
+                        <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm">
+                            <p className="mb-2">Your account is not verified yet. Verify it to unlock subscription actions.</p>
+                            <Button
+                                type="button"
+                                onClick={() => {
+                                    const returnTo = `${window.location.pathname}${window.location.search}`
+                                    navigate(`/verify?return_to=${encodeURIComponent(returnTo)}`)
+                                }}
+                            >
+                                Verify account
+                            </Button>
+                        </div>
+                    </RenderIf>
                     <div>
                         <Label htmlFor="name">First Name</Label>
                         <Input

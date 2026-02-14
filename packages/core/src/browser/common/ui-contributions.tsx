@@ -34,7 +34,8 @@ export const SecondaryItemContribution = Symbol('SecondaryItemContribution')
 export interface SecondaryItem {
     id: string
     label: string
-    action: () => void    
+    action: () => void
+    condition?: () => Promise<boolean>
 }
 
 export interface SecondaryItemContribution {

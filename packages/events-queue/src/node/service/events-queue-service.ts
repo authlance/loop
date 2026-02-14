@@ -19,6 +19,7 @@ export class EventsQueueServiceImpl implements EventsQueueService {
     protected nc: NatsConnection
     protected js: JetStreamClient
     protected jsManager: JetStreamManager
+    private subjectPrefix?: string
     private emitters: Map<string, Emitter<MessageEvent>> = new Map()
     private consumingStreams: Set<string> = new Set()
 
@@ -30,7 +31,8 @@ export class EventsQueueServiceImpl implements EventsQueueService {
         // such empty
     }
 
-    async initialize(natsUrl: string): Promise<void> {
+    async initialize(natsUrl: string, prefix?: string): Promise<void> {
+        this.subjectPrefix = this.normalizePrefix(prefix)
         this.nc = await connect({
             servers: [natsUrl],
             pingInterval: 100000,
@@ -54,7 +56,7 @@ export class EventsQueueServiceImpl implements EventsQueueService {
         let delay = 500;
         for (let attempt = 0; attempt < 10; attempt++) {
             try {
-                await this.js.publish(key, message);
+                await this.js.publish(this.subjectForKey(key), message);
                 return;
             } catch (err) {
                 if (attempt < 4) {
@@ -72,8 +74,12 @@ export class EventsQueueServiceImpl implements EventsQueueService {
         if (!this.emitters.has(key)) {
             this.emitters.set(key, new Emitter<MessageEvent>())
         }
-        
-        const streamName = key.replace(/\./g, '-')
+
+        const subject = this.subjectForKey(key)
+        const streamName = subject.replace(/\./g, '-')
+        const consumerName = this.subjectPrefix
+            ? `${this.subjectPrefix}-${options.consumerName}`
+            : options.consumerName
         if (this.consumingStreams.has(streamName)) { // process is already listening to this stream
             const currentDisposable = this.emitters.get(key)?.event(callback)
             return {
@@ -84,7 +90,7 @@ export class EventsQueueServiceImpl implements EventsQueueService {
             }
         }
         try {
-            const consumer = await this.js.consumers.get(streamName, options.consumerName)
+            const consumer = await this.js.consumers.get(streamName, consumerName)
             await this.consumeStream(key, streamName, consumer, options.workQueue, options.broadcast)
             if (consumer) {
                 const currentDisposable = this.emitters.get(key)?.event(callback)
@@ -101,7 +107,7 @@ export class EventsQueueServiceImpl implements EventsQueueService {
         try {
             let createStream = true
             try {
-                const currentStreams = await this.jsManager.streams.list(key)
+                const currentStreams = await this.jsManager.streams.list(subject)
                 let streamInfo: StreamInfo[] | undefined = undefined
                 while ((streamInfo = await currentStreams.next())) {
                     if (streamInfo && streamInfo.length > 0) {
@@ -119,13 +125,13 @@ export class EventsQueueServiceImpl implements EventsQueueService {
             if (createStream) {
                 await this.jsManager.streams.add({
                     name: streamName,
-                    subjects: [key],
+                    subjects: [subject],
                     retention: options.workQueue ? RetentionPolicy.Workqueue : RetentionPolicy.Limits,
                 })
             }
             let createConsumer = true
             try {
-                const consumer = await this.js.consumers.get(streamName, options.consumerName)
+                const consumer = await this.js.consumers.get(streamName, consumerName)
                 if (consumer) {
                     createConsumer = false
                 }
@@ -134,10 +140,10 @@ export class EventsQueueServiceImpl implements EventsQueueService {
             }
             if (createConsumer) {
                 const info = await this.jsManager.consumers.add(streamName, {
-                    name: options.consumerName,
-                    durable_name: options.consumerName,
-                    filter_subject: key,
-                    deliver_group: options.consumerName,
+                    name: consumerName,
+                    durable_name: consumerName,
+                    filter_subject: subject,
+                    deliver_group: consumerName,
                     deliver_policy: options.workQueue ? DeliverPolicy.All : DeliverPolicy.LastPerSubject,
                     ack_policy: AckPolicy.Explicit,
                     ack_wait: (100000 * 10000) * ( options.ackWait || 30),
@@ -148,7 +154,7 @@ export class EventsQueueServiceImpl implements EventsQueueService {
                 }
             }
 
-            const consumer = await this.js.consumers.get(streamName, options.consumerName)
+            const consumer = await this.js.consumers.get(streamName, consumerName)
 
             await this.consumeStream(key, streamName, consumer, options.workQueue, options.broadcast)
         } catch (error) {
@@ -162,6 +168,24 @@ export class EventsQueueServiceImpl implements EventsQueueService {
                 currentDisposable?.dispose()
             },
         }
+    }
+
+    private normalizePrefix(prefix?: string): string | undefined {
+        const trimmed = prefix?.trim()
+        if (!trimmed) {
+            return undefined
+        }
+        return trimmed.replace(/\.+$/, '')
+    }
+
+    private subjectForKey(key: string): string {
+        if (!this.subjectPrefix) {
+            return key
+        }
+        if (key.startsWith(`${this.subjectPrefix}.`)) {
+            return key
+        }
+        return `${this.subjectPrefix}.${key}`
     }
 
     private async consumeStream(key: string, streamName: string, c: Consumer, workQueue: boolean, broadcast: boolean): Promise<void> {

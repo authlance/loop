@@ -79,7 +79,10 @@
     "trim-newlines": "^3.0.1",
     "dot-prop": "^4.2.1",
     "debug": "^4.3.4",
-    "cross-spawn": "^7.0.6"
+    "cross-spawn": "^7.0.6",
+    "glob": "^10.5.0",
+    "brace-expansion": "^2.0.2",
+    "postcss": "^8.4.47"
   },
   "workspaces": [
     "dev-packages/*",

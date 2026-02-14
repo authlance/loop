@@ -212,6 +212,7 @@ export class BackendPrerenderApplication {
             query: {},
             extraParams: {},
             route: entry.route,
+            store,
         }
         await this.collectRouteExtraParams(entry.route, context)
         const cacheContributions = this.getPrerenderCacheContributions()

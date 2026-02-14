@@ -11,6 +11,7 @@ import {
 
 import { GroupRow } from './types'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
+import { Debouncer } from '@authlance/core/lib/browser/common/utils'
 import { Button } from '@authlance/ui/lib/browser/components/button'
 import { MoreHorizontal } from 'lucide-react'
 import { Group } from '@authlance/core/lib/browser/common/auth'
@@ -202,7 +203,7 @@ export const ListGroupsComponent: React.FC = () => {
     const filterFromUrl = () => searchParams.get('filter') || undefined
     const [filter, setFilter] = useState<string | undefined>(filterFromUrl())
     const inputRef = useRef<HTMLInputElement>(null)
-    const { debouncer } = useContext(SessionContext)
+    const [debouncer] = useState(new Debouncer(() => {}, 750))
     const navigate = useNavigate()
     const groupsData = useGetGroups(
         tryParseInt(page, 1),
@@ -224,45 +225,10 @@ export const ListGroupsComponent: React.FC = () => {
         inputRef.current?.focus()
     }, [])
 
-    const targetBaseUrl = useMemo(() => {
-        const baseUrl = '/groups'
-        return baseUrl
-    }, [currentPage])
-
     const handleChangePage = useCallback((event: React.MouseEvent<HTMLElement>, targetPage: number) => {
         event.preventDefault()
         navigate(`/groups/${targetPage}${filter ? `?filter=${encodeURIComponent(filter)}` : ''}`)
     }, [])
-
-    useEffect(() => {
-        const currentUrlFilter = searchParams.get('filter')
-        const shouldResetPage = currentUrlFilter && currentUrlFilter !== filter
-
-        let targetUrl = shouldResetPage
-            ? targetBaseUrl
-            : page && currentPage > 1
-            ? `${targetBaseUrl}/${page}`
-            : targetBaseUrl
-
-        const query = new URLSearchParams()
-        if (filter?.trim()) {
-            query.set('filter', filter.trim())
-        }
-
-        const queryStr = query.toString()
-
-        if (queryStr) {
-            targetUrl += `?${queryStr}`
-        }
-
-        if (window.location.pathname + window.location.search === targetUrl) {
-            return
-        }
-
-        debouncer.cancelAndReplaceCallback(() => {
-            navigate(targetUrl)
-        })
-    }, [filter, page, targetBaseUrl, navigate, debouncer, currentPage, searchParams])
 
     if (groupsData.isLoading || !groupsData.data) {
         return <DefaultDashboardContent loading={true} />
@@ -279,7 +245,7 @@ export const ListGroupsComponent: React.FC = () => {
                     </Label>
                     <Input
                         placeholder="Search"
-                        value={filter || ''}
+                        defaultValue={filter || ''}
                         className="w-full"
                         onChange={(e) => changeFilter(e.target.value)}
                         ref={inputRef}

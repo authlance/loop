@@ -90,7 +90,7 @@ export const OidcClientsComponent: React.FC<{ token?: string }> = ({ token }) =>
     const navigate = useNavigate()
     const { oauthSDK } = useContext(HydraContext)
     const emitter = useMemo(() => new Emitter<string>(), [])
-    const [loadToken, setLoadToken] = useState<string>(token || '00000000-0000-0000-0000-000000000000')
+    const [loadToken, setLoadToken] = useState<string>(token || '')
     const queryClient = useQueryClient()
     const clients = useClients(oauthSDK, loadToken)
     const nextToken: string | undefined = useMemo<string | undefined>(
@@ -206,7 +206,7 @@ export const OidcClientsComponent: React.FC<{ token?: string }> = ({ token }) =>
             <div className="flex justify-between mb-4">
                 <RenderIf isTrue={!!previousToken}>
                     <Button
-                        onClick={() => emitter.fire(previousToken || '00000000-0000-0000-0000-000000000000')}
+                        onClick={() => emitter.fire(previousToken || '')}
                         disabled={!previousToken}
                     >
                         Previous
@@ -214,7 +214,7 @@ export const OidcClientsComponent: React.FC<{ token?: string }> = ({ token }) =>
                 </RenderIf>
                 <RenderIf isTrue={!!nextToken}>
                     <Button
-                        onClick={() => emitter.fire(nextToken || '00000000-0000-0000-0000-000000000000')}
+                        onClick={() => emitter.fire(nextToken || '')}
                         disabled={!nextToken}
                     >
                         Next

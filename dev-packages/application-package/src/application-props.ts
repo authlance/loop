@@ -82,7 +82,8 @@ export namespace ApplicationProps {
                 backendBasePath: undefined,
                 frontEndBasePath: undefined,
                 docsBasePath: undefined,
-                googleAnalyticsMeasurementId: undefined
+                googleAnalyticsMeasurementId: undefined,
+                homeUrl: undefined
             }
         },
         generator: {
@@ -132,6 +133,8 @@ export interface FrontendApplicationConfig extends ApplicationConfig {
     docsBasePath: string | undefined;
 
     googleAnalyticsMeasurementId: string | undefined;
+
+    homeUrl: string | undefined;
 
     frontEndStylesheets?: string | string[];
 

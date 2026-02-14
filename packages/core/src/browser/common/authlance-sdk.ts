@@ -4,6 +4,8 @@ import {
     AdminRolesApi,
     AdminUsersApi,
     AuthApi,
+    DevicesApi,
+    SecretsApi,
     LicenseApi,
     PaymentsApi,
     PersonalAccessTokensApi,
@@ -106,6 +108,10 @@ export const newPersonalAccessTokensApi: (token?: string) => PersonalAccessToken
     new PersonalAccessTokensApi(getAuthlanceConfiguration(token), '', authlanceApiClient)
 export const newLicenseApi: (token?: string) => LicenseApi = (token) =>
     new LicenseApi(getAuthlanceConfiguration(token), '', authlanceApiClient)
+export const newGroupDevicesApi: (token?: string) => DevicesApi = (token) =>
+    new DevicesApi(getAuthlanceConfiguration(token), '', authlanceApiClient)
+export const newGroupSecretsApi: (token?: string) => SecretsApi = (token) =>
+    new SecretsApi(getAuthlanceConfiguration(token), '', authlanceApiClient)
 
 export interface AuthlanceFactory {
     adminApi: (token?: string) => AdminApi
@@ -116,6 +122,8 @@ export interface AuthlanceFactory {
     personalAccessTokensApi: (token?: string) => PersonalAccessTokensApi
     paymentsApi: (token?: string) => PaymentsApi
     licenseApi: (token?: string) => LicenseApi
+    groupDevicesApi: (token?: string) => DevicesApi
+    groupSecretsApi: (token?: string) => SecretsApi
 }
 
 export const authlanceFactory: AuthlanceFactory = {
@@ -127,4 +135,6 @@ export const authlanceFactory: AuthlanceFactory = {
     personalAccessTokensApi: newPersonalAccessTokensApi,
     paymentsApi: newPaymentsApi,
     licenseApi: newLicenseApi,
+    groupDevicesApi: newGroupDevicesApi,
+    groupSecretsApi: newGroupSecretsApi,
 }

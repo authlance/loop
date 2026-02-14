@@ -20,6 +20,7 @@ export interface User {
     groups: string[]
     groupRoles: GroupRole[]
     state?: CommonIdentityState
+    verified?: boolean
 }
 
 export interface Group {

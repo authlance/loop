@@ -37,12 +37,29 @@ export interface RoutePrerenderContext {
     query?: Record<string, string | string[]>
     extraParams: Record<string, any>
     route?: RouteContribution
+    store: any
 }
 
 export interface RoutePrerenderConfig {
     enabled: boolean
     preload?: (context: RoutePrerenderContext) => MaybePromise<void>
     document?: RoutePrerenderDocumentDefinition | RoutePrerenderDocumentProvider
+    /**
+     * Optional raw renderer for non-HTML outputs. If provided, raw output can skip React rendering.
+     */
+    rawRenderer?: (context: RoutePrerenderContext) => MaybePromise<string>
+    /**
+     * When true, the renderer will output only the raw rendered markup without
+     * any HTML document wrapper (no <!DOCTYPE>, <html>, <head>, <body>, scripts, etc.).
+     * Useful for generating non-HTML content like XML sitemaps, RSS feeds, or robots.txt.
+     */
+    rawOutput?: boolean
+    /**
+     * Optional content type header for raw output mode.
+     * Defaults to 'text/html' if not specified.
+     * Common values: 'application/xml', 'text/xml', 'text/plain', 'application/json'
+     */
+    contentType?: string
 }
 
 export const RoutePrerenderContextContribution = Symbol('RoutePrerenderContextContribution')
@@ -106,6 +123,7 @@ export interface RouteContribution {
     name: string
     navBar: boolean
     icon?: React.ReactElement
+    navOrder?: number
     component: React.ComponentType
     pathProvider?: (user: User, targetGroup?: string) => string
     nameProvider?: (authContext: AuthSession) => string

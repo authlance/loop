@@ -44,9 +44,12 @@ class PostMarkClientWrapper {
             veirfy_url: data.templateModel.verification_url,
             verification_code: data.templateModel.verification_code,
         }
+        // Extract any additional custom fields (e.g., message for contact forms)
+        const { name, email, recovery_code, verification_url, recovery_url, verification_code, ...customFields } = data.templateModel
         return {
             ...sender,
             ...recipient,
+            ...customFields,
         }
     }
 }

@@ -26,6 +26,75 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface CommonDevicePresence
+ */
+export interface CommonDevicePresence {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommonDevicePresence
+     */
+    'deviceId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommonDevicePresence
+     */
+    'deviceName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommonDevicePresence
+     */
+    'deviceType'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CommonDevicePresence
+     */
+    'hasPushToken'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommonDevicePresence
+     */
+    'lastSeenAt'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CommonDevicePresence
+     */
+    'online'?: boolean;
+    /**
+     * 
+     * @type {CommonPushPlatform}
+     * @memberof CommonDevicePresence
+     */
+    'pushPlatform'?: CommonPushPlatform;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CommonDevicePresence
+     */
+    'reachable'?: boolean;
+    /**
+     * 
+     * @type {CommonPresenceStatus}
+     * @memberof CommonDevicePresence
+     */
+    'status'?: CommonPresenceStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommonDevicePresence
+     */
+    'userId'?: string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CommonGroup
  */
 export interface CommonGroup {
@@ -59,6 +128,12 @@ export interface CommonGroup {
      * @memberof CommonGroup
      */
     'name'?: string;
+    /**
+     * SubscriptionUUID is the App Store account token for the group.
+     * @type {string}
+     * @memberof CommonGroup
+     */
+    'subscriptionUuid'?: string;
     /**
      * 
      * @type {string}
@@ -103,6 +178,60 @@ export const CommonIdentityState = {
 } as const;
 
 export type CommonIdentityState = typeof CommonIdentityState[keyof typeof CommonIdentityState];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const CommonPresenceStatus = {
+    PresenceOnline: 'online',
+    PresenceReachable: 'reachable',
+    PresenceOffline: 'offline'
+} as const;
+
+export type CommonPresenceStatus = typeof CommonPresenceStatus[keyof typeof CommonPresenceStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface CommonPricingTierDto
+ */
+export interface CommonPricingTierDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof CommonPricingTierDto
+     */
+    'setupPrice'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommonPricingTierDto
+     */
+    'unitPrice'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommonPricingTierDto
+     */
+    'upTo'?: number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const CommonPushPlatform = {
+    PushPlatformIOS: 'ios',
+    PushPlatformAndroid: 'android'
+} as const;
+
+export type CommonPushPlatform = typeof CommonPushPlatform[keyof typeof CommonPushPlatform];
 
 
 /**
@@ -329,6 +458,429 @@ export interface ControllersAuthLogoutResponse {
      * @memberof ControllersAuthLogoutResponse
      */
     'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesActivateDeviceRequest
+ */
+export interface ControllersDevicesActivateDeviceRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesActivateDeviceRequest
+     */
+    'encryptedGroupKey'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesCreateKeyRequestRequest
+ */
+export interface ControllersDevicesCreateKeyRequestRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesCreateKeyRequestRequest
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesCreateKeyRequestRequest
+     */
+    'requestingDeviceId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesCreateKeyRequestRequest
+     */
+    'requestingPublicKey'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesDeviceResponse
+ */
+export interface ControllersDevicesDeviceResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'deviceId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'deviceName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'deviceType'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'encryptedGroupKey'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'keyVersion'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'lastSeenAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'publicKey'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'status'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'updatedAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesDeviceResponse
+     */
+    'userId'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesGrantKeyRequestRequest
+ */
+export interface ControllersDevicesGrantKeyRequestRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesGrantKeyRequestRequest
+     */
+    'encryptedGroupKey'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesGrantKeyRequestRequest
+     */
+    'grantingDeviceId'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesInitializeSecretsRequest
+ */
+export interface ControllersDevicesInitializeSecretsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesInitializeSecretsRequest
+     */
+    'encryptedPayload'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesKeyRequestResponse
+ */
+export interface ControllersDevicesKeyRequestResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'encryptedGroupKey'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'expiresAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'grantingDeviceId'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'requestId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'requestingDeviceId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'requestingPublicKey'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesKeyRequestResponse
+     */
+    'status'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesKeyStatusResponse
+ */
+export interface ControllersDevicesKeyStatusResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesKeyStatusResponse
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ControllersDevicesKeyStatusResponse
+     */
+    'keyReady'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesRegisterDeviceRequest
+ */
+export interface ControllersDevicesRegisterDeviceRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesRegisterDeviceRequest
+     */
+    'deviceName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesRegisterDeviceRequest
+     */
+    'deviceType'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesRegisterDeviceRequest
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesRegisterDeviceRequest
+     */
+    'publicKey'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesRevokeWithRotationRequest
+ */
+export interface ControllersDevicesRevokeWithRotationRequest {
+    /**
+     * 
+     * @type {Array<DunaAuthCommonDeviceKeyUpdate>}
+     * @memberof ControllersDevicesRevokeWithRotationRequest
+     */
+    'deviceKeys'?: Array<DunaAuthCommonDeviceKeyUpdate>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesRevokeWithRotationRequest
+     */
+    'newEncryptedSecrets'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesRotateKeyRequest
+ */
+export interface ControllersDevicesRotateKeyRequest {
+    /**
+     * 
+     * @type {Array<DunaAuthCommonDeviceKeyUpdate>}
+     * @memberof ControllersDevicesRotateKeyRequest
+     */
+    'deviceKeys'?: Array<DunaAuthCommonDeviceKeyUpdate>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesRotateKeyRequest
+     */
+    'newEncryptedSecrets'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesRotateKeyRequest
+     */
+    'reason'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesSSEMessage
+ */
+export interface ControllersDevicesSSEMessage {
+    /**
+     * 
+     * @type {object}
+     * @memberof ControllersDevicesSSEMessage
+     */
+    'data'?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesSSEMessage
+     */
+    'event'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesSecretsResponse
+ */
+export interface ControllersDevicesSecretsResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'encryptedPayload'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'keyReady'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'secretId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'updatedAt'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesSecretsResponse
+     */
+    'version'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesUpdatePublicKeyRequest
+ */
+export interface ControllersDevicesUpdatePublicKeyRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesUpdatePublicKeyRequest
+     */
+    'publicKey'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesUpdatePushTokenRequest
+ */
+export interface ControllersDevicesUpdatePushTokenRequest {
+    /**
+     * \"ios\" or \"android\"
+     * @type {string}
+     * @memberof ControllersDevicesUpdatePushTokenRequest
+     */
+    'platform'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesUpdatePushTokenRequest
+     */
+    'pushToken'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersDevicesUpdateSecretsRequest
+ */
+export interface ControllersDevicesUpdateSecretsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersDevicesUpdateSecretsRequest
+     */
+    'encryptedPayload'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ControllersDevicesUpdateSecretsRequest
+     */
+    'expectedVersion'?: number;
 }
 /**
  * 
@@ -579,6 +1131,81 @@ export interface ControllersPersonalaccesstokensVerifyPersonalAccessTokenRespons
 /**
  * 
  * @export
+ * @interface ControllersSubscriptionsAppStoreServerNotificationRequest
+ */
+export interface ControllersSubscriptionsAppStoreServerNotificationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreServerNotificationRequest
+     */
+    'signedPayload'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersSubscriptionsAppStoreVerifyRequest
+ */
+export interface ControllersSubscriptionsAppStoreVerifyRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreVerifyRequest
+     */
+    'app_account_token'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreVerifyRequest
+     */
+    'group'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreVerifyRequest
+     */
+    'group_long_name'?: string;
+    /**
+     * Optional fields for creating a new group during verification
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreVerifyRequest
+     */
+    'group_name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreVerifyRequest
+     */
+    'signature'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ControllersSubscriptionsAppStoreVerifyRequest
+     */
+    'signed_transaction_info'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ControllersSubscriptionsAppStoreVerifyResponse
+ */
+export interface ControllersSubscriptionsAppStoreVerifyResponse {
+    /**
+     * 
+     * @type {DunaAuthCommonGroup}
+     * @memberof ControllersSubscriptionsAppStoreVerifyResponse
+     */
+    'group'?: DunaAuthCommonGroup;
+    /**
+     * 
+     * @type {DunaAuthCommonGroupSubscriptionsDto}
+     * @memberof ControllersSubscriptionsAppStoreVerifyResponse
+     */
+    'subscription'?: DunaAuthCommonGroupSubscriptionsDto;
+}
+/**
+ * 
+ * @export
  * @interface ControllersUsersBanUserRequest
  */
 export interface ControllersUsersBanUserRequest {
@@ -681,6 +1308,56 @@ export interface DunaAuthCommonCreateCustomerPortalSessionResponse {
 /**
  * 
  * @export
+ * @interface DunaAuthCommonDeviceKeyUpdate
+ */
+export interface DunaAuthCommonDeviceKeyUpdate {
+    /**
+     * 
+     * @type {string}
+     * @memberof DunaAuthCommonDeviceKeyUpdate
+     */
+    'deviceId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DunaAuthCommonDeviceKeyUpdate
+     */
+    'encryptedGroupKey'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DunaAuthCommonDeviceKeyUpdate
+     */
+    'senderPublicKey'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface DunaAuthCommonDeviceLimitReachedResponse
+ */
+export interface DunaAuthCommonDeviceLimitReachedResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonDeviceLimitReachedResponse
+     */
+    'current'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DunaAuthCommonDeviceLimitReachedResponse
+     */
+    'limitReached'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonDeviceLimitReachedResponse
+     */
+    'max'?: number;
+}
+/**
+ * 
+ * @export
  * @interface DunaAuthCommonGetProductDetailsRequest
  */
 export interface DunaAuthCommonGetProductDetailsRequest {
@@ -767,6 +1444,12 @@ export interface DunaAuthCommonGroup {
      */
     'name'?: string;
     /**
+     * SubscriptionUUID is the App Store account token for the group.
+     * @type {string}
+     * @memberof DunaAuthCommonGroup
+     */
+    'subscriptionUuid'?: string;
+    /**
      * 
      * @type {string}
      * @memberof DunaAuthCommonGroup
@@ -791,6 +1474,55 @@ export interface DunaAuthCommonGroupAvailabilityResponse {
      * @memberof DunaAuthCommonGroupAvailabilityResponse
      */
     'signature'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface DunaAuthCommonGroupDevicePresenceResponse
+ */
+export interface DunaAuthCommonGroupDevicePresenceResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'count'?: number;
+    /**
+     * 
+     * @type {Array<CommonDevicePresence>}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'devices'?: Array<CommonDevicePresence>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'groupId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'max'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'offlineCount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'onlineCount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonGroupDevicePresenceResponse
+     */
+    'reachableCount'?: number;
 }
 /**
  * 
@@ -934,6 +1666,62 @@ export interface DunaAuthCommonIdentityStateResponse {
 /**
  * 
  * @export
+ * @interface DunaAuthCommonKeyRotationResponse
+ */
+export interface DunaAuthCommonKeyRotationResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonKeyRotationResponse
+     */
+    'devicesPendingKeyRequest'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonKeyRotationResponse
+     */
+    'devicesUpdated'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonKeyRotationResponse
+     */
+    'keyVersion'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface DunaAuthCommonKeyVersionResponse
+ */
+export interface DunaAuthCommonKeyVersionResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonKeyVersionResponse
+     */
+    'deviceKeyVersion'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DunaAuthCommonKeyVersionResponse
+     */
+    'keyVersion'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DunaAuthCommonKeyVersionResponse
+     */
+    'lastRotatedAt'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DunaAuthCommonKeyVersionResponse
+     */
+    'needsUpdate'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface DunaAuthCommonPaymentTierDto
  */
 export interface DunaAuthCommonPaymentTierDto {
@@ -948,6 +1736,12 @@ export interface DunaAuthCommonPaymentTierDto {
      * @type {string}
      * @memberof DunaAuthCommonPaymentTierDto
      */
+    'ios_product_id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DunaAuthCommonPaymentTierDto
+     */
     'lookupKey'?: string;
     /**
      * 
@@ -957,10 +1751,22 @@ export interface DunaAuthCommonPaymentTierDto {
     'maxMembers'?: number;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof DunaAuthCommonPaymentTierDto
+     */
+    'platforms'?: Array<string>;
+    /**
+     * 
      * @type {number}
      * @memberof DunaAuthCommonPaymentTierDto
      */
     'price'?: number;
+    /**
+     * 
+     * @type {Array<CommonPricingTierDto>}
+     * @memberof DunaAuthCommonPaymentTierDto
+     */
+    'pricingTiers'?: Array<CommonPricingTierDto>;
     /**
      * 
      * @type {string}
@@ -1351,12 +2157,15 @@ export const AdminGroupsApiAxiosParamCreator = function (configuration?: Configu
          * Updates any group metadata, including avatar uploads, as an administrator.
          * @summary Update group (admin)
          * @param {string} group Group name
+         * @param {DunaAuthCommonGroup} payload Group data to update
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authlanceIdentityApiV1AdminGroupGroupPost: async (group: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        authlanceIdentityApiV1AdminGroupGroupPost: async (group: string, payload: DunaAuthCommonGroup, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'group' is not null or undefined
             assertParamExists('authlanceIdentityApiV1AdminGroupGroupPost', 'group', group)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1AdminGroupGroupPost', 'payload', payload)
             const localVarPath = `/authlance/identity/api/v1/admin/group/{group}`
                 .replace(`{${"group"}}`, encodeURIComponent(String(group)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1375,9 +2184,12 @@ export const AdminGroupsApiAxiosParamCreator = function (configuration?: Configu
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1437,6 +2249,43 @@ export const AdminGroupsApiAxiosParamCreator = function (configuration?: Configu
             const localVarPath = `/authlance/identity/api/v1/admin/group/{group}/role/{user}`
                 .replace(`{${"group"}}`, encodeURIComponent(String(group)))
                 .replace(`{${"user"}}`, encodeURIComponent(String(user)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns group metadata by numeric group ID.
+         * @summary Get group by ID (admin)
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1AdminGroupIdGroupIdGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1AdminGroupIdGroupIdGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/admin/group/id/{groupId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1701,11 +2550,12 @@ export const AdminGroupsApiFp = function(configuration?: Configuration) {
          * Updates any group metadata, including avatar uploads, as an administrator.
          * @summary Update group (admin)
          * @param {string} group Group name
+         * @param {DunaAuthCommonGroup} payload Group data to update
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async authlanceIdentityApiV1AdminGroupGroupPost(group: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonGroup>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1AdminGroupGroupPost(group, options);
+        async authlanceIdentityApiV1AdminGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonGroup>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1AdminGroupGroupPost(group, payload, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminGroupsApi.authlanceIdentityApiV1AdminGroupGroupPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1735,6 +2585,19 @@ export const AdminGroupsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1AdminGroupGroupRoleUserGet(group, user, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AdminGroupsApi.authlanceIdentityApiV1AdminGroupGroupRoleUserGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns group metadata by numeric group ID.
+         * @summary Get group by ID (admin)
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonGroup>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminGroupsApi.authlanceIdentityApiV1AdminGroupIdGroupIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -1855,11 +2718,12 @@ export const AdminGroupsApiFactory = function (configuration?: Configuration, ba
          * Updates any group metadata, including avatar uploads, as an administrator.
          * @summary Update group (admin)
          * @param {string} group Group name
+         * @param {DunaAuthCommonGroup} payload Group data to update
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authlanceIdentityApiV1AdminGroupGroupPost(group: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup> {
-            return localVarFp.authlanceIdentityApiV1AdminGroupGroupPost(group, options).then((request) => request(axios, basePath));
+        authlanceIdentityApiV1AdminGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup> {
+            return localVarFp.authlanceIdentityApiV1AdminGroupGroupPost(group, payload, options).then((request) => request(axios, basePath));
         },
         /**
          * Replaces the set of roles granted to a group member. Requires admin privileges.
@@ -1881,6 +2745,16 @@ export const AdminGroupsApiFactory = function (configuration?: Configuration, ba
          */
         authlanceIdentityApiV1AdminGroupGroupRoleUserGet(group: string, user: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroupMemberRolesResponse> {
             return localVarFp.authlanceIdentityApiV1AdminGroupGroupRoleUserGet(group, user, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns group metadata by numeric group ID.
+         * @summary Get group by ID (admin)
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup> {
+            return localVarFp.authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId, options).then((request) => request(axios, basePath));
         },
         /**
          * Lists all groups for the specified identity. Useful for administrative audits.
@@ -1987,11 +2861,12 @@ export interface AdminGroupsApiInterface {
      * Updates any group metadata, including avatar uploads, as an administrator.
      * @summary Update group (admin)
      * @param {string} group Group name
+     * @param {DunaAuthCommonGroup} payload Group data to update
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminGroupsApiInterface
      */
-    authlanceIdentityApiV1AdminGroupGroupPost(group: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup>;
+    authlanceIdentityApiV1AdminGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup>;
 
     /**
      * Replaces the set of roles granted to a group member. Requires admin privileges.
@@ -2013,6 +2888,16 @@ export interface AdminGroupsApiInterface {
      * @memberof AdminGroupsApiInterface
      */
     authlanceIdentityApiV1AdminGroupGroupRoleUserGet(group: string, user: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroupMemberRolesResponse>;
+
+    /**
+     * Returns group metadata by numeric group ID.
+     * @summary Get group by ID (admin)
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminGroupsApiInterface
+     */
+    authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup>;
 
     /**
      * Lists all groups for the specified identity. Useful for administrative audits.
@@ -2129,12 +3014,13 @@ export class AdminGroupsApi extends BaseAPI implements AdminGroupsApiInterface {
      * Updates any group metadata, including avatar uploads, as an administrator.
      * @summary Update group (admin)
      * @param {string} group Group name
+     * @param {DunaAuthCommonGroup} payload Group data to update
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AdminGroupsApi
      */
-    public authlanceIdentityApiV1AdminGroupGroupPost(group: string, options?: RawAxiosRequestConfig) {
-        return AdminGroupsApiFp(this.configuration).authlanceIdentityApiV1AdminGroupGroupPost(group, options).then((request) => request(this.axios, this.basePath));
+    public authlanceIdentityApiV1AdminGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig) {
+        return AdminGroupsApiFp(this.configuration).authlanceIdentityApiV1AdminGroupGroupPost(group, payload, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2160,6 +3046,18 @@ export class AdminGroupsApi extends BaseAPI implements AdminGroupsApiInterface {
      */
     public authlanceIdentityApiV1AdminGroupGroupRoleUserGet(group: string, user: string, options?: RawAxiosRequestConfig) {
         return AdminGroupsApiFp(this.configuration).authlanceIdentityApiV1AdminGroupGroupRoleUserGet(group, user, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns group metadata by numeric group ID.
+     * @summary Get group by ID (admin)
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminGroupsApi
+     */
+    public authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return AdminGroupsApiFp(this.configuration).authlanceIdentityApiV1AdminGroupIdGroupIdGet(groupId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2525,6 +3423,135 @@ export class AdminRolesApi extends BaseAPI implements AdminRolesApiInterface {
      */
     public authlanceIdentityApiV1AdminUserRolePut(payload: ControllersUsersRoleAssignmentPayload, options?: RawAxiosRequestConfig) {
         return AdminRolesApiFp(this.configuration).authlanceIdentityApiV1AdminUserRolePut(payload, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * AdminSubscriptionsApi - axios parameter creator
+ * @export
+ */
+export const AdminSubscriptionsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Returns all subscriptions for the specified group by group ID.
+         * @summary List subscriptions for a group (admin)
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/admin/subscriptions/group/{groupId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AdminSubscriptionsApi - functional programming interface
+ * @export
+ */
+export const AdminSubscriptionsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AdminSubscriptionsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Returns all subscriptions for the specified group by group ID.
+         * @summary List subscriptions for a group (admin)
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DunaAuthCommonGroupSubscriptionsDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminSubscriptionsApi.authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AdminSubscriptionsApi - factory interface
+ * @export
+ */
+export const AdminSubscriptionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AdminSubscriptionsApiFp(configuration)
+    return {
+        /**
+         * Returns all subscriptions for the specified group by group ID.
+         * @summary List subscriptions for a group (admin)
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<DunaAuthCommonGroupSubscriptionsDto>> {
+            return localVarFp.authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AdminSubscriptionsApi - interface
+ * @export
+ * @interface AdminSubscriptionsApi
+ */
+export interface AdminSubscriptionsApiInterface {
+    /**
+     * Returns all subscriptions for the specified group by group ID.
+     * @summary List subscriptions for a group (admin)
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminSubscriptionsApiInterface
+     */
+    authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<DunaAuthCommonGroupSubscriptionsDto>>;
+
+}
+
+/**
+ * AdminSubscriptionsApi - object-oriented interface
+ * @export
+ * @class AdminSubscriptionsApi
+ * @extends {BaseAPI}
+ */
+export class AdminSubscriptionsApi extends BaseAPI implements AdminSubscriptionsApiInterface {
+    /**
+     * Returns all subscriptions for the specified group by group ID.
+     * @summary List subscriptions for a group (admin)
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminSubscriptionsApi
+     */
+    public authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return AdminSubscriptionsApiFp(this.configuration).authlanceIdentityApiV1AdminSubscriptionsGroupGroupIdGet(groupId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -3274,6 +4301,1976 @@ export class AuthApi extends BaseAPI implements AuthApiInterface {
      */
     public authlanceIdentityMePost(payload: ControllersAuthAuthRequest, options?: RawAxiosRequestConfig) {
         return AuthApiFp(this.configuration).authlanceIdentityMePost(payload, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * DevicesApi - axios parameter creator
+ * @export
+ */
+export const DevicesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Removes a device from the group (admin only)
+         * @summary Remove a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete: async (groupId: number, deviceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete', 'deviceId', deviceId)
+            const localVarPath = `/authlance/identity/api/v1/realm/admin/groups/{groupId}/devices/{deviceId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Revokes a device (admin only). Optionally includes rotation data to atomically revoke and rotate.
+         * @summary Revoke a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesRevokeWithRotationRequest} [payload] Optional rotation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost: async (groupId: number, deviceId: string, payload?: ControllersDevicesRevokeWithRotationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost', 'deviceId', deviceId)
+            const localVarPath = `/authlance/identity/api/v1/realm/admin/groups/{groupId}/devices/{deviceId}/revoke`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Rotates the group key and re-encrypts secrets (admin only)
+         * @summary Rotate group encryption key
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesRotateKeyRequest} payload Rotation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost: async (groupId: number, payload: ControllersDevicesRotateKeyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost', 'groupId', groupId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/admin/groups/{groupId}/keys/rotate`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets the count of active devices in a group (for subscription enforcement)
+         * @summary Get device count
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/count`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Activates a device with its encrypted group key
+         * @summary Activate a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesActivateDeviceRequest} payload Activation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost: async (groupId: number, deviceId: string, payload: ControllersDevicesActivateDeviceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost', 'deviceId', deviceId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}/activate`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets a specific device by ID
+         * @summary Get a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet: async (groupId: number, deviceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet', 'deviceId', deviceId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the last seen timestamp for a device
+         * @summary Update device heartbeat
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost: async (groupId: number, deviceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost', 'deviceId', deviceId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}/heartbeat`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the encrypted group key for a device (if updated during rotation)
+         * @summary Get device\'s encrypted group key
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet: async (groupId: number, deviceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet', 'deviceId', deviceId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}/key`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the public key for a device. Used for key migration scenarios.
+         * @summary Update device public key
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesUpdatePublicKeyRequest} payload Public key
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut: async (groupId: number, deviceId: string, payload: ControllersDevicesUpdatePublicKeyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut', 'deviceId', deviceId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}/public-key`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Clears the push notification token for a device
+         * @summary Clear device push token
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete: async (groupId: number, deviceId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete', 'deviceId', deviceId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}/push-token`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the push notification token for a device
+         * @summary Update device push token
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesUpdatePushTokenRequest} payload Push token payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut: async (groupId: number, deviceId: string, payload: ControllersDevicesUpdatePushTokenRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut', 'groupId', groupId)
+            // verify required parameter 'deviceId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut', 'deviceId', deviceId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/{deviceId}/push-token`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"deviceId"}}`, encodeURIComponent(String(deviceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Opens an SSE connection to receive real-time device events for a group
+         * @summary Subscribe to group device events
+         * @param {number} groupId Group ID
+         * @param {string} [deviceId] Device ID (optional, for device-specific events)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet: async (groupId: number, deviceId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/events`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (deviceId !== undefined) {
+                localVarQueryParameter['deviceId'] = deviceId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lists all devices registered in a group
+         * @summary List devices in a group
+         * @param {number} groupId Group ID
+         * @param {string} [status] Filter by status (active, pending, revoked)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet: async (groupId: number, status?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lists all pending key requests for a group
+         * @summary List pending key requests
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/key-requests`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Creates a request to receive the encrypted group key from another device
+         * @summary Create a key sharing request
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesCreateKeyRequestRequest} payload Key request payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost: async (groupId: number, payload: ControllersDevicesCreateKeyRequestRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost', 'groupId', groupId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/key-requests`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets a specific key request by ID
+         * @summary Get a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet: async (groupId: number, requestId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet', 'groupId', groupId)
+            // verify required parameter 'requestId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet', 'requestId', requestId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/key-requests/{requestId}`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"requestId"}}`, encodeURIComponent(String(requestId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Grants a key request by providing the encrypted group key
+         * @summary Grant a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {ControllersDevicesGrantKeyRequestRequest} payload Grant payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost: async (groupId: number, requestId: string, payload: ControllersDevicesGrantKeyRequestRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost', 'groupId', groupId)
+            // verify required parameter 'requestId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost', 'requestId', requestId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/key-requests/{requestId}/grant`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"requestId"}}`, encodeURIComponent(String(requestId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Rejects a pending key request
+         * @summary Reject a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost: async (groupId: number, requestId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost', 'groupId', groupId)
+            // verify required parameter 'requestId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost', 'requestId', requestId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/key-requests/{requestId}/reject`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)))
+                .replace(`{${"requestId"}}`, encodeURIComponent(String(requestId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Registers a new device for the current user in a group
+         * @summary Register a new device
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesRegisterDeviceRequest} payload Device registration payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost: async (groupId: number, payload: ControllersDevicesRegisterDeviceRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost', 'groupId', groupId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets real-time presence information for all devices in a group
+         * @summary Get device presence
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/devices/presence`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns current key version and whether device needs update
+         * @summary Get key version info
+         * @param {number} groupId Group ID
+         * @param {string} [deviceId] Device ID (optional, uses current user\&#39;s device if not specified)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet: async (groupId: number, deviceId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/keys/version`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+            if (deviceId !== undefined) {
+                localVarQueryParameter['deviceId'] = deviceId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DevicesApi - functional programming interface
+ * @export
+ */
+export const DevicesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DevicesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Removes a device from the group (admin only)
+         * @summary Remove a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Revokes a device (admin only). Optionally includes rotation data to atomically revoke and rotate.
+         * @summary Revoke a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesRevokeWithRotationRequest} [payload] Optional rotation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId: number, deviceId: string, payload?: ControllersDevicesRevokeWithRotationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonKeyRotationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId, deviceId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Rotates the group key and re-encrypts secrets (admin only)
+         * @summary Rotate group encryption key
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesRotateKeyRequest} payload Rotation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId: number, payload: ControllersDevicesRotateKeyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonKeyRotationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets the count of active devices in a group (for subscription enforcement)
+         * @summary Get device count
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonDeviceLimitReachedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Activates a device with its encrypted group key
+         * @summary Activate a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesActivateDeviceRequest} payload Activation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId: number, deviceId: string, payload: ControllersDevicesActivateDeviceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesDeviceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId, deviceId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets a specific device by ID
+         * @summary Get a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesDeviceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the last seen timestamp for a device
+         * @summary Update device heartbeat
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the encrypted group key for a device (if updated during rotation)
+         * @summary Get device\'s encrypted group key
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the public key for a device. Used for key migration scenarios.
+         * @summary Update device public key
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesUpdatePublicKeyRequest} payload Public key
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePublicKeyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId, deviceId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Clears the push notification token for a device
+         * @summary Clear device push token
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the push notification token for a device
+         * @summary Update device push token
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesUpdatePushTokenRequest} payload Push token payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePushTokenRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId, deviceId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Opens an SSE connection to receive real-time device events for a group
+         * @summary Subscribe to group device events
+         * @param {number} groupId Group ID
+         * @param {string} [deviceId] Device ID (optional, for device-specific events)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesSSEMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lists all devices registered in a group
+         * @summary List devices in a group
+         * @param {number} groupId Group ID
+         * @param {string} [status] Filter by status (active, pending, revoked)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId: number, status?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ControllersDevicesDeviceResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId, status, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lists all pending key requests for a group
+         * @summary List pending key requests
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ControllersDevicesKeyRequestResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Creates a request to receive the encrypted group key from another device
+         * @summary Create a key sharing request
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesCreateKeyRequestRequest} payload Key request payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId: number, payload: ControllersDevicesCreateKeyRequestRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesKeyRequestResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets a specific key request by ID
+         * @summary Get a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId: number, requestId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesKeyRequestResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId, requestId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Grants a key request by providing the encrypted group key
+         * @summary Grant a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {ControllersDevicesGrantKeyRequestRequest} payload Grant payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId: number, requestId: string, payload: ControllersDevicesGrantKeyRequestRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId, requestId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Rejects a pending key request
+         * @summary Reject a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId: number, requestId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId, requestId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Registers a new device for the current user in a group
+         * @summary Register a new device
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesRegisterDeviceRequest} payload Device registration payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId: number, payload: ControllersDevicesRegisterDeviceRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesDeviceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets real-time presence information for all devices in a group
+         * @summary Get device presence
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonGroupDevicePresenceResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns current key version and whether device needs update
+         * @summary Get key version info
+         * @param {number} groupId Group ID
+         * @param {string} [deviceId] Device ID (optional, uses current user\&#39;s device if not specified)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonKeyVersionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId, deviceId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DevicesApi.authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DevicesApi - factory interface
+ * @export
+ */
+export const DevicesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DevicesApiFp(configuration)
+    return {
+        /**
+         * Removes a device from the group (admin only)
+         * @summary Remove a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Revokes a device (admin only). Optionally includes rotation data to atomically revoke and rotate.
+         * @summary Revoke a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesRevokeWithRotationRequest} [payload] Optional rotation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId: number, deviceId: string, payload?: ControllersDevicesRevokeWithRotationRequest, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonKeyRotationResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId, deviceId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Rotates the group key and re-encrypts secrets (admin only)
+         * @summary Rotate group encryption key
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesRotateKeyRequest} payload Rotation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId: number, payload: ControllersDevicesRotateKeyRequest, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonKeyRotationResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets the count of active devices in a group (for subscription enforcement)
+         * @summary Get device count
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonDeviceLimitReachedResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Activates a device with its encrypted group key
+         * @summary Activate a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesActivateDeviceRequest} payload Activation payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId: number, deviceId: string, payload: ControllersDevicesActivateDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesDeviceResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId, deviceId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets a specific device by ID
+         * @summary Get a device
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesDeviceResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the last seen timestamp for a device
+         * @summary Update device heartbeat
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the encrypted group key for a device (if updated during rotation)
+         * @summary Get device\'s encrypted group key
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the public key for a device. Used for key migration scenarios.
+         * @summary Update device public key
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesUpdatePublicKeyRequest} payload Public key
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePublicKeyRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId, deviceId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Clears the push notification token for a device
+         * @summary Clear device push token
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the push notification token for a device
+         * @summary Update device push token
+         * @param {number} groupId Group ID
+         * @param {string} deviceId Device ID
+         * @param {ControllersDevicesUpdatePushTokenRequest} payload Push token payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePushTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId, deviceId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Opens an SSE connection to receive real-time device events for a group
+         * @summary Subscribe to group device events
+         * @param {number} groupId Group ID
+         * @param {string} [deviceId] Device ID (optional, for device-specific events)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSSEMessage> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lists all devices registered in a group
+         * @summary List devices in a group
+         * @param {number} groupId Group ID
+         * @param {string} [status] Filter by status (active, pending, revoked)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId: number, status?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ControllersDevicesDeviceResponse>> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId, status, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lists all pending key requests for a group
+         * @summary List pending key requests
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ControllersDevicesKeyRequestResponse>> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Creates a request to receive the encrypted group key from another device
+         * @summary Create a key sharing request
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesCreateKeyRequestRequest} payload Key request payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId: number, payload: ControllersDevicesCreateKeyRequestRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesKeyRequestResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets a specific key request by ID
+         * @summary Get a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId: number, requestId: string, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesKeyRequestResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId, requestId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Grants a key request by providing the encrypted group key
+         * @summary Grant a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {ControllersDevicesGrantKeyRequestRequest} payload Grant payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId: number, requestId: string, payload: ControllersDevicesGrantKeyRequestRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId, requestId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Rejects a pending key request
+         * @summary Reject a key request
+         * @param {number} groupId Group ID
+         * @param {string} requestId Request ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId: number, requestId: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId, requestId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Registers a new device for the current user in a group
+         * @summary Register a new device
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesRegisterDeviceRequest} payload Device registration payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId: number, payload: ControllersDevicesRegisterDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesDeviceResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets real-time presence information for all devices in a group
+         * @summary Get device presence
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroupDevicePresenceResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns current key version and whether device needs update
+         * @summary Get key version info
+         * @param {number} groupId Group ID
+         * @param {string} [deviceId] Device ID (optional, uses current user\&#39;s device if not specified)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonKeyVersionResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId, deviceId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DevicesApi - interface
+ * @export
+ * @interface DevicesApi
+ */
+export interface DevicesApiInterface {
+    /**
+     * Removes a device from the group (admin only)
+     * @summary Remove a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Revokes a device (admin only). Optionally includes rotation data to atomically revoke and rotate.
+     * @summary Revoke a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesRevokeWithRotationRequest} [payload] Optional rotation payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId: number, deviceId: string, payload?: ControllersDevicesRevokeWithRotationRequest, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonKeyRotationResponse>;
+
+    /**
+     * Rotates the group key and re-encrypts secrets (admin only)
+     * @summary Rotate group encryption key
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesRotateKeyRequest} payload Rotation payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId: number, payload: ControllersDevicesRotateKeyRequest, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonKeyRotationResponse>;
+
+    /**
+     * Gets the count of active devices in a group (for subscription enforcement)
+     * @summary Get device count
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonDeviceLimitReachedResponse>;
+
+    /**
+     * Activates a device with its encrypted group key
+     * @summary Activate a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesActivateDeviceRequest} payload Activation payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId: number, deviceId: string, payload: ControllersDevicesActivateDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesDeviceResponse>;
+
+    /**
+     * Gets a specific device by ID
+     * @summary Get a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesDeviceResponse>;
+
+    /**
+     * Updates the last seen timestamp for a device
+     * @summary Update device heartbeat
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Returns the encrypted group key for a device (if updated during rotation)
+     * @summary Get device\'s encrypted group key
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }>;
+
+    /**
+     * Updates the public key for a device. Used for key migration scenarios.
+     * @summary Update device public key
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesUpdatePublicKeyRequest} payload Public key
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePublicKeyRequest, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Clears the push notification token for a device
+     * @summary Clear device push token
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Updates the push notification token for a device
+     * @summary Update device push token
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesUpdatePushTokenRequest} payload Push token payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePushTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Opens an SSE connection to receive real-time device events for a group
+     * @summary Subscribe to group device events
+     * @param {number} groupId Group ID
+     * @param {string} [deviceId] Device ID (optional, for device-specific events)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSSEMessage>;
+
+    /**
+     * Lists all devices registered in a group
+     * @summary List devices in a group
+     * @param {number} groupId Group ID
+     * @param {string} [status] Filter by status (active, pending, revoked)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId: number, status?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ControllersDevicesDeviceResponse>>;
+
+    /**
+     * Lists all pending key requests for a group
+     * @summary List pending key requests
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<ControllersDevicesKeyRequestResponse>>;
+
+    /**
+     * Creates a request to receive the encrypted group key from another device
+     * @summary Create a key sharing request
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesCreateKeyRequestRequest} payload Key request payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId: number, payload: ControllersDevicesCreateKeyRequestRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesKeyRequestResponse>;
+
+    /**
+     * Gets a specific key request by ID
+     * @summary Get a key request
+     * @param {number} groupId Group ID
+     * @param {string} requestId Request ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId: number, requestId: string, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesKeyRequestResponse>;
+
+    /**
+     * Grants a key request by providing the encrypted group key
+     * @summary Grant a key request
+     * @param {number} groupId Group ID
+     * @param {string} requestId Request ID
+     * @param {ControllersDevicesGrantKeyRequestRequest} payload Grant payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId: number, requestId: string, payload: ControllersDevicesGrantKeyRequestRequest, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Rejects a pending key request
+     * @summary Reject a key request
+     * @param {number} groupId Group ID
+     * @param {string} requestId Request ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId: number, requestId: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Registers a new device for the current user in a group
+     * @summary Register a new device
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesRegisterDeviceRequest} payload Device registration payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId: number, payload: ControllersDevicesRegisterDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesDeviceResponse>;
+
+    /**
+     * Gets real-time presence information for all devices in a group
+     * @summary Get device presence
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroupDevicePresenceResponse>;
+
+    /**
+     * Returns current key version and whether device needs update
+     * @summary Get key version info
+     * @param {number} groupId Group ID
+     * @param {string} [deviceId] Device ID (optional, uses current user\&#39;s device if not specified)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonKeyVersionResponse>;
+
+}
+
+/**
+ * DevicesApi - object-oriented interface
+ * @export
+ * @class DevicesApi
+ * @extends {BaseAPI}
+ */
+export class DevicesApi extends BaseAPI implements DevicesApiInterface {
+    /**
+     * Removes a device from the group (admin only)
+     * @summary Remove a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdDelete(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Revokes a device (admin only). Optionally includes rotation data to atomically revoke and rotate.
+     * @summary Revoke a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesRevokeWithRotationRequest} [payload] Optional rotation payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId: number, deviceId: string, payload?: ControllersDevicesRevokeWithRotationRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmAdminGroupsGroupIdDevicesDeviceIdRevokePost(groupId, deviceId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Rotates the group key and re-encrypts secrets (admin only)
+     * @summary Rotate group encryption key
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesRotateKeyRequest} payload Rotation payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId: number, payload: ControllersDevicesRotateKeyRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmAdminGroupsGroupIdKeysRotatePost(groupId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets the count of active devices in a group (for subscription enforcement)
+     * @summary Get device count
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesCountGet(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Activates a device with its encrypted group key
+     * @summary Activate a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesActivateDeviceRequest} payload Activation payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId: number, deviceId: string, payload: ControllersDevicesActivateDeviceRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdActivatePost(groupId, deviceId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets a specific device by ID
+     * @summary Get a device
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdGet(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the last seen timestamp for a device
+     * @summary Update device heartbeat
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId: number, deviceId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdHeartbeatPost(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the encrypted group key for a device (if updated during rotation)
+     * @summary Get device\'s encrypted group key
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId: number, deviceId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdKeyGet(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the public key for a device. Used for key migration scenarios.
+     * @summary Update device public key
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesUpdatePublicKeyRequest} payload Public key
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePublicKeyRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPublicKeyPut(groupId, deviceId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Clears the push notification token for a device
+     * @summary Clear device push token
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId: number, deviceId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenDelete(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the push notification token for a device
+     * @summary Update device push token
+     * @param {number} groupId Group ID
+     * @param {string} deviceId Device ID
+     * @param {ControllersDevicesUpdatePushTokenRequest} payload Push token payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId: number, deviceId: string, payload: ControllersDevicesUpdatePushTokenRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesDeviceIdPushTokenPut(groupId, deviceId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Opens an SSE connection to receive real-time device events for a group
+     * @summary Subscribe to group device events
+     * @param {number} groupId Group ID
+     * @param {string} [deviceId] Device ID (optional, for device-specific events)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesEventsGet(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lists all devices registered in a group
+     * @summary List devices in a group
+     * @param {number} groupId Group ID
+     * @param {string} [status] Filter by status (active, pending, revoked)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId: number, status?: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesGet(groupId, status, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lists all pending key requests for a group
+     * @summary List pending key requests
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsGet(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Creates a request to receive the encrypted group key from another device
+     * @summary Create a key sharing request
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesCreateKeyRequestRequest} payload Key request payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId: number, payload: ControllersDevicesCreateKeyRequestRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsPost(groupId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets a specific key request by ID
+     * @summary Get a key request
+     * @param {number} groupId Group ID
+     * @param {string} requestId Request ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId: number, requestId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGet(groupId, requestId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Grants a key request by providing the encrypted group key
+     * @summary Grant a key request
+     * @param {number} groupId Group ID
+     * @param {string} requestId Request ID
+     * @param {ControllersDevicesGrantKeyRequestRequest} payload Grant payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId: number, requestId: string, payload: ControllersDevicesGrantKeyRequestRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdGrantPost(groupId, requestId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Rejects a pending key request
+     * @summary Reject a key request
+     * @param {number} groupId Group ID
+     * @param {string} requestId Request ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId: number, requestId: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesKeyRequestsRequestIdRejectPost(groupId, requestId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Registers a new device for the current user in a group
+     * @summary Register a new device
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesRegisterDeviceRequest} payload Device registration payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId: number, payload: ControllersDevicesRegisterDeviceRequest, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesPost(groupId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets real-time presence information for all devices in a group
+     * @summary Get device presence
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdDevicesPresenceGet(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns current key version and whether device needs update
+     * @summary Get key version info
+     * @param {number} groupId Group ID
+     * @param {string} [deviceId] Device ID (optional, uses current user\&#39;s device if not specified)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DevicesApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId: number, deviceId?: string, options?: RawAxiosRequestConfig) {
+        return DevicesApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdKeysVersionGet(groupId, deviceId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -5344,12 +8341,15 @@ export const RealmGroupsApiAxiosParamCreator = function (configuration?: Configu
          * Updates group metadata that is accessible within the current realm.
          * @summary Update group
          * @param {string} group Group name
+         * @param {DunaAuthCommonGroup} payload Group data to update
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authlanceIdentityApiV1RealmGroupGroupPost: async (group: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        authlanceIdentityApiV1RealmGroupGroupPost: async (group: string, payload: DunaAuthCommonGroup, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'group' is not null or undefined
             assertParamExists('authlanceIdentityApiV1RealmGroupGroupPost', 'group', group)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupGroupPost', 'payload', payload)
             const localVarPath = `/authlance/identity/api/v1/realm/group/{group}`
                 .replace(`{${"group"}}`, encodeURIComponent(String(group)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5368,9 +8368,12 @@ export const RealmGroupsApiAxiosParamCreator = function (configuration?: Configu
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5458,11 +8461,12 @@ export const RealmGroupsApiFp = function(configuration?: Configuration) {
          * Updates group metadata that is accessible within the current realm.
          * @summary Update group
          * @param {string} group Group name
+         * @param {DunaAuthCommonGroup} payload Group data to update
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async authlanceIdentityApiV1RealmGroupGroupPost(group: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonGroup>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupGroupPost(group, options);
+        async authlanceIdentityApiV1RealmGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DunaAuthCommonGroup>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupGroupPost(group, payload, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['RealmGroupsApi.authlanceIdentityApiV1RealmGroupGroupPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -5515,11 +8519,12 @@ export const RealmGroupsApiFactory = function (configuration?: Configuration, ba
          * Updates group metadata that is accessible within the current realm.
          * @summary Update group
          * @param {string} group Group name
+         * @param {DunaAuthCommonGroup} payload Group data to update
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authlanceIdentityApiV1RealmGroupGroupPost(group: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup> {
-            return localVarFp.authlanceIdentityApiV1RealmGroupGroupPost(group, options).then((request) => request(axios, basePath));
+        authlanceIdentityApiV1RealmGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupGroupPost(group, payload, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns the roles granted to the specified user inside the given group within the caller\'s realm.
@@ -5565,11 +8570,12 @@ export interface RealmGroupsApiInterface {
      * Updates group metadata that is accessible within the current realm.
      * @summary Update group
      * @param {string} group Group name
+     * @param {DunaAuthCommonGroup} payload Group data to update
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RealmGroupsApiInterface
      */
-    authlanceIdentityApiV1RealmGroupGroupPost(group: string, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup>;
+    authlanceIdentityApiV1RealmGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig): AxiosPromise<DunaAuthCommonGroup>;
 
     /**
      * Returns the roles granted to the specified user inside the given group within the caller\'s realm.
@@ -5619,12 +8625,13 @@ export class RealmGroupsApi extends BaseAPI implements RealmGroupsApiInterface {
      * Updates group metadata that is accessible within the current realm.
      * @summary Update group
      * @param {string} group Group name
+     * @param {DunaAuthCommonGroup} payload Group data to update
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof RealmGroupsApi
      */
-    public authlanceIdentityApiV1RealmGroupGroupPost(group: string, options?: RawAxiosRequestConfig) {
-        return RealmGroupsApiFp(this.configuration).authlanceIdentityApiV1RealmGroupGroupPost(group, options).then((request) => request(this.axios, this.basePath));
+    public authlanceIdentityApiV1RealmGroupGroupPost(group: string, payload: DunaAuthCommonGroup, options?: RawAxiosRequestConfig) {
+        return RealmGroupsApiFp(this.configuration).authlanceIdentityApiV1RealmGroupGroupPost(group, payload, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -5644,11 +8651,613 @@ export class RealmGroupsApi extends BaseAPI implements RealmGroupsApiInterface {
 
 
 /**
+ * SecretsApi - axios parameter creator
+ * @export
+ */
+export const SecretsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Deletes all encrypted secrets for a group (admin only)
+         * @summary Delete group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/admin/groups/{groupId}/secrets`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Resets the group key and secrets (admin only). Warning: This permanently deletes all encrypted data.
+         * @summary Reset group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/admin/groups/{groupId}/secrets/reset`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Gets the encrypted secrets payload for a group
+         * @summary Get group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/secrets`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Checks if the group key has been initialized
+         * @summary Get key status
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet: async (groupId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet', 'groupId', groupId)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/secrets/key-status`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Initializes the encrypted secrets for a group (first device only)
+         * @summary Initialize group secrets
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesInitializeSecretsRequest} payload Secrets payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost: async (groupId: number, payload: ControllersDevicesInitializeSecretsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost', 'groupId', groupId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/secrets`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Updates the encrypted secrets payload for a group
+         * @summary Update group secrets
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesUpdateSecretsRequest} payload Updated secrets payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut: async (groupId: number, payload: ControllersDevicesUpdateSecretsRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'groupId' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut', 'groupId', groupId)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/realm/groups/{groupId}/secrets`
+                .replace(`{${"groupId"}}`, encodeURIComponent(String(groupId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SecretsApi - functional programming interface
+ * @export
+ */
+export const SecretsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SecretsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Deletes all encrypted secrets for a group (admin only)
+         * @summary Delete group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SecretsApi.authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Resets the group key and secrets (admin only). Warning: This permanently deletes all encrypted data.
+         * @summary Reset group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SecretsApi.authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Gets the encrypted secrets payload for a group
+         * @summary Get group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesSecretsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SecretsApi.authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Checks if the group key has been initialized
+         * @summary Get key status
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesKeyStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SecretsApi.authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Initializes the encrypted secrets for a group (first device only)
+         * @summary Initialize group secrets
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesInitializeSecretsRequest} payload Secrets payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId: number, payload: ControllersDevicesInitializeSecretsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesSecretsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SecretsApi.authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Updates the encrypted secrets payload for a group
+         * @summary Update group secrets
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesUpdateSecretsRequest} payload Updated secrets payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId: number, payload: ControllersDevicesUpdateSecretsRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersDevicesSecretsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SecretsApi.authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * SecretsApi - factory interface
+ * @export
+ */
+export const SecretsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SecretsApiFp(configuration)
+    return {
+        /**
+         * Deletes all encrypted secrets for a group (admin only)
+         * @summary Delete group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Resets the group key and secrets (admin only). Warning: This permanently deletes all encrypted data.
+         * @summary Reset group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Gets the encrypted secrets payload for a group
+         * @summary Get group secrets
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSecretsResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Checks if the group key has been initialized
+         * @summary Get key status
+         * @param {number} groupId Group ID
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesKeyStatusResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Initializes the encrypted secrets for a group (first device only)
+         * @summary Initialize group secrets
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesInitializeSecretsRequest} payload Secrets payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId: number, payload: ControllersDevicesInitializeSecretsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSecretsResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId, payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Updates the encrypted secrets payload for a group
+         * @summary Update group secrets
+         * @param {number} groupId Group ID
+         * @param {ControllersDevicesUpdateSecretsRequest} payload Updated secrets payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId: number, payload: ControllersDevicesUpdateSecretsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSecretsResponse> {
+            return localVarFp.authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId, payload, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SecretsApi - interface
+ * @export
+ * @interface SecretsApi
+ */
+export interface SecretsApiInterface {
+    /**
+     * Deletes all encrypted secrets for a group (admin only)
+     * @summary Delete group secrets
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApiInterface
+     */
+    authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Resets the group key and secrets (admin only). Warning: This permanently deletes all encrypted data.
+     * @summary Reset group secrets
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApiInterface
+     */
+    authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
+    /**
+     * Gets the encrypted secrets payload for a group
+     * @summary Get group secrets
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSecretsResponse>;
+
+    /**
+     * Checks if the group key has been initialized
+     * @summary Get key status
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId: number, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesKeyStatusResponse>;
+
+    /**
+     * Initializes the encrypted secrets for a group (first device only)
+     * @summary Initialize group secrets
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesInitializeSecretsRequest} payload Secrets payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId: number, payload: ControllersDevicesInitializeSecretsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSecretsResponse>;
+
+    /**
+     * Updates the encrypted secrets payload for a group
+     * @summary Update group secrets
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesUpdateSecretsRequest} payload Updated secrets payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApiInterface
+     */
+    authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId: number, payload: ControllersDevicesUpdateSecretsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersDevicesSecretsResponse>;
+
+}
+
+/**
+ * SecretsApi - object-oriented interface
+ * @export
+ * @class SecretsApi
+ * @extends {BaseAPI}
+ */
+export class SecretsApi extends BaseAPI implements SecretsApiInterface {
+    /**
+     * Deletes all encrypted secrets for a group (admin only)
+     * @summary Delete group secrets
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApi
+     */
+    public authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId: number, options?: RawAxiosRequestConfig) {
+        return SecretsApiFp(this.configuration).authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsDelete(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Resets the group key and secrets (admin only). Warning: This permanently deletes all encrypted data.
+     * @summary Reset group secrets
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApi
+     */
+    public authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId: number, options?: RawAxiosRequestConfig) {
+        return SecretsApiFp(this.configuration).authlanceIdentityApiV1RealmAdminGroupsGroupIdSecretsResetPost(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Gets the encrypted secrets payload for a group
+     * @summary Get group secrets
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return SecretsApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdSecretsGet(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Checks if the group key has been initialized
+     * @summary Get key status
+     * @param {number} groupId Group ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId: number, options?: RawAxiosRequestConfig) {
+        return SecretsApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdSecretsKeyStatusGet(groupId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Initializes the encrypted secrets for a group (first device only)
+     * @summary Initialize group secrets
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesInitializeSecretsRequest} payload Secrets payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId: number, payload: ControllersDevicesInitializeSecretsRequest, options?: RawAxiosRequestConfig) {
+        return SecretsApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdSecretsPost(groupId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Updates the encrypted secrets payload for a group
+     * @summary Update group secrets
+     * @param {number} groupId Group ID
+     * @param {ControllersDevicesUpdateSecretsRequest} payload Updated secrets payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SecretsApi
+     */
+    public authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId: number, payload: ControllersDevicesUpdateSecretsRequest, options?: RawAxiosRequestConfig) {
+        return SecretsApiFp(this.configuration).authlanceIdentityApiV1RealmGroupsGroupIdSecretsPut(groupId, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * SubscriptionsApi - axios parameter creator
  * @export
  */
 export const SubscriptionsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * Verifies a StoreKit transaction and records the group subscription.
+         * @summary Verify App Store subscription
+         * @param {string} user User identity
+         * @param {ControllersSubscriptionsAppStoreVerifyRequest} payload App Store verification payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost: async (user: string, payload: ControllersSubscriptionsAppStoreVerifyRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'user' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost', 'user', user)
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/profile/subscriptions/{user}/app-store/verify`
+                .replace(`{${"user"}}`, encodeURIComponent(String(user)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * Looks up a group subscription using the external billing subscription ID.
          * @summary Get subscription by billing subscription ID
@@ -5768,6 +9377,77 @@ export const SubscriptionsApiAxiosParamCreator = function (configuration?: Confi
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Processes App Store Server Notifications v2 payloads.
+         * @summary Handle App Store Server Notifications
+         * @param {ControllersSubscriptionsAppStoreServerNotificationRequest} payload Server notification payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost: async (payload: ControllersSubscriptionsAppStoreServerNotificationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'payload' is not null or undefined
+            assertParamExists('authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost', 'payload', payload)
+            const localVarPath = `/authlance/identity/api/v1/subscriptions/app-store/notifications`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(payload, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns all available payment tiers. No authentication required.
+         * @summary List subscription tiers (public)
+         * @param {string} [platform] Filter by platform (ios, android, web)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1SubscriptionsTiersGet: async (platform?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/authlance/identity/api/v1/subscriptions/tiers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (platform !== undefined) {
+                localVarQueryParameter['platform'] = platform;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -5778,6 +9458,20 @@ export const SubscriptionsApiAxiosParamCreator = function (configuration?: Confi
 export const SubscriptionsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = SubscriptionsApiAxiosParamCreator(configuration)
     return {
+        /**
+         * Verifies a StoreKit transaction and records the group subscription.
+         * @summary Verify App Store subscription
+         * @param {string} user User identity
+         * @param {ControllersSubscriptionsAppStoreVerifyRequest} payload App Store verification payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user: string, payload: ControllersSubscriptionsAppStoreVerifyRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ControllersSubscriptionsAppStoreVerifyResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user, payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SubscriptionsApi.authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * Looks up a group subscription using the external billing subscription ID.
          * @summary Get subscription by billing subscription ID
@@ -5819,6 +9513,32 @@ export const SubscriptionsApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['SubscriptionsApi.authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Processes App Store Server Notifications v2 payloads.
+         * @summary Handle App Store Server Notifications
+         * @param {ControllersSubscriptionsAppStoreServerNotificationRequest} payload Server notification payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload: ControllersSubscriptionsAppStoreServerNotificationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SubscriptionsApi.authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns all available payment tiers. No authentication required.
+         * @summary List subscription tiers (public)
+         * @param {string} [platform] Filter by platform (ios, android, web)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceIdentityApiV1SubscriptionsTiersGet(platform?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DunaAuthCommonPaymentTierDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceIdentityApiV1SubscriptionsTiersGet(platform, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SubscriptionsApi.authlanceIdentityApiV1SubscriptionsTiersGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -5829,6 +9549,17 @@ export const SubscriptionsApiFp = function(configuration?: Configuration) {
 export const SubscriptionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = SubscriptionsApiFp(configuration)
     return {
+        /**
+         * Verifies a StoreKit transaction and records the group subscription.
+         * @summary Verify App Store subscription
+         * @param {string} user User identity
+         * @param {ControllersSubscriptionsAppStoreVerifyRequest} payload App Store verification payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user: string, payload: ControllersSubscriptionsAppStoreVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersSubscriptionsAppStoreVerifyResponse> {
+            return localVarFp.authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user, payload, options).then((request) => request(axios, basePath));
+        },
         /**
          * Looks up a group subscription using the external billing subscription ID.
          * @summary Get subscription by billing subscription ID
@@ -5861,6 +9592,26 @@ export const SubscriptionsApiFactory = function (configuration?: Configuration, 
         authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(user: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<DunaAuthCommonPaymentTierDto>> {
             return localVarFp.authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(user, options).then((request) => request(axios, basePath));
         },
+        /**
+         * Processes App Store Server Notifications v2 payloads.
+         * @summary Handle App Store Server Notifications
+         * @param {ControllersSubscriptionsAppStoreServerNotificationRequest} payload Server notification payload
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload: ControllersSubscriptionsAppStoreServerNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
+            return localVarFp.authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns all available payment tiers. No authentication required.
+         * @summary List subscription tiers (public)
+         * @param {string} [platform] Filter by platform (ios, android, web)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceIdentityApiV1SubscriptionsTiersGet(platform?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<DunaAuthCommonPaymentTierDto>> {
+            return localVarFp.authlanceIdentityApiV1SubscriptionsTiersGet(platform, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -5870,6 +9621,17 @@ export const SubscriptionsApiFactory = function (configuration?: Configuration, 
  * @interface SubscriptionsApi
  */
 export interface SubscriptionsApiInterface {
+    /**
+     * Verifies a StoreKit transaction and records the group subscription.
+     * @summary Verify App Store subscription
+     * @param {string} user User identity
+     * @param {ControllersSubscriptionsAppStoreVerifyRequest} payload App Store verification payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SubscriptionsApiInterface
+     */
+    authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user: string, payload: ControllersSubscriptionsAppStoreVerifyRequest, options?: RawAxiosRequestConfig): AxiosPromise<ControllersSubscriptionsAppStoreVerifyResponse>;
+
     /**
      * Looks up a group subscription using the external billing subscription ID.
      * @summary Get subscription by billing subscription ID
@@ -5902,6 +9664,26 @@ export interface SubscriptionsApiInterface {
      */
     authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(user: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<DunaAuthCommonPaymentTierDto>>;
 
+    /**
+     * Processes App Store Server Notifications v2 payloads.
+     * @summary Handle App Store Server Notifications
+     * @param {ControllersSubscriptionsAppStoreServerNotificationRequest} payload Server notification payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SubscriptionsApiInterface
+     */
+    authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload: ControllersSubscriptionsAppStoreServerNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }>;
+
+    /**
+     * Returns all available payment tiers. No authentication required.
+     * @summary List subscription tiers (public)
+     * @param {string} [platform] Filter by platform (ios, android, web)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SubscriptionsApiInterface
+     */
+    authlanceIdentityApiV1SubscriptionsTiersGet(platform?: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<DunaAuthCommonPaymentTierDto>>;
+
 }
 
 /**
@@ -5911,6 +9693,19 @@ export interface SubscriptionsApiInterface {
  * @extends {BaseAPI}
  */
 export class SubscriptionsApi extends BaseAPI implements SubscriptionsApiInterface {
+    /**
+     * Verifies a StoreKit transaction and records the group subscription.
+     * @summary Verify App Store subscription
+     * @param {string} user User identity
+     * @param {ControllersSubscriptionsAppStoreVerifyRequest} payload App Store verification payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SubscriptionsApi
+     */
+    public authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user: string, payload: ControllersSubscriptionsAppStoreVerifyRequest, options?: RawAxiosRequestConfig) {
+        return SubscriptionsApiFp(this.configuration).authlanceIdentityApiV1ProfileSubscriptionsUserAppStoreVerifyPost(user, payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Looks up a group subscription using the external billing subscription ID.
      * @summary Get subscription by billing subscription ID
@@ -5947,6 +9742,30 @@ export class SubscriptionsApi extends BaseAPI implements SubscriptionsApiInterfa
      */
     public authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(user: string, options?: RawAxiosRequestConfig) {
         return SubscriptionsApiFp(this.configuration).authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(user, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Processes App Store Server Notifications v2 payloads.
+     * @summary Handle App Store Server Notifications
+     * @param {ControllersSubscriptionsAppStoreServerNotificationRequest} payload Server notification payload
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SubscriptionsApi
+     */
+    public authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload: ControllersSubscriptionsAppStoreServerNotificationRequest, options?: RawAxiosRequestConfig) {
+        return SubscriptionsApiFp(this.configuration).authlanceIdentityApiV1SubscriptionsAppStoreNotificationsPost(payload, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns all available payment tiers. No authentication required.
+     * @summary List subscription tiers (public)
+     * @param {string} [platform] Filter by platform (ios, android, web)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SubscriptionsApi
+     */
+    public authlanceIdentityApiV1SubscriptionsTiersGet(platform?: string, options?: RawAxiosRequestConfig) {
+        return SubscriptionsApiFp(this.configuration).authlanceIdentityApiV1SubscriptionsTiersGet(platform, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

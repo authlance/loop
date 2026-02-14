@@ -5,8 +5,8 @@ import { RoutesApplicationContribution } from '@authlance/core/lib/common/routes
 import { MyUserProfilePageContribution, UserProfilePageContribution } from './pages/User'
 import { AddOauthClientActionContribution, OauthClientCreatePageContribution, OauthClientsPageContribution, OauthClientUpdatePageContribution } from './pages/OidcClients'
 import { bindContributionProvider } from '@authlance/core/lib/common/contribution-provider'
-import { GroupActionContribution, GroupActionsProvider, GroupActionsProviderImpl, RegistrationFooterContribution, RegistrationFooterProvider, RegistrationFooterProviderImpl, UserActionContribution, UserActionsProvider, UserActionsProviderImpl } from './common/contributions'
-import { AddGroupMainActionContribution, BusinessAccountGroupSidebarSecondaryItem, GroupBillingDetailsSidebarSecondaryItem, GroupsAddMemberPageContribution, GroupsCreatePageContribution, GroupsEditMemberPageContribution, GroupsEditPageContribution, GroupsPageContribution, GroupsPaginationPageContribution, MyGroupsEditPageContribution, UserGroupsPageContribution } from './pages/Groups'
+import { ActivateGroupTextContribution, ActivateGroupTextProvider, ActivateGroupTextProviderImpl, GroupActionContribution, GroupActionsProvider, GroupActionsProviderImpl, GroupSelectionContribution, GroupSelectionProvider, GroupSelectionProviderImpl, GroupSelectionUIContribution, GroupSelectionUIProvider, GroupSelectionUIProviderImpl, RegistrationFooterContribution, RegistrationFooterProvider, RegistrationFooterProviderImpl, TierSelectionUIContribution, TierSelectionUIProvider, TierSelectionUIProviderImpl, UserActionContribution, UserActionsProvider, UserActionsProviderImpl } from './common/contributions'
+import { AddGroupMainActionContribution, BusinessAccountGroupSidebarSecondaryItem, ChangePlanSidebarSecondaryItem, GroupBillingDetailsSidebarSecondaryItem, GroupsAddMemberPageContribution, GroupsCreatePageContribution, GroupsEditMemberPageContribution, GroupsEditPageContribution, GroupsPageContribution, GroupsPaginationPageContribution, MyGroupsEditPageContribution, UserGroupsPageContribution } from './pages/Groups'
 import { SecondaryItemContribution, MainActionContribution } from '@authlance/core/lib/browser/common/ui-contributions'
 import { GroupContextPageContribution, SelectGroupContextSidebarSecondaryItem } from './pages/GroupContext'
 import { AddGroupMemberMainActionContribution, GroupsMembersPageContribution, MyGroupsMembersPageContribution } from './pages/GroupMembers'
@@ -102,12 +102,30 @@ export default new ContainerModule((bind) => {
     bind(RegistrationFooterProviderImpl).toSelf().inSingletonScope()
     bind(RegistrationFooterProvider).toService(RegistrationFooterProviderImpl)
 
+    bindContributionProvider(bind, GroupSelectionContribution)
+    bind(GroupSelectionProviderImpl).toSelf().inSingletonScope()
+    bind(GroupSelectionProvider).toService(GroupSelectionProviderImpl)
+
+    bindContributionProvider(bind, GroupSelectionUIContribution)
+    bind(GroupSelectionUIProviderImpl).toSelf().inSingletonScope()
+    bind(GroupSelectionUIProvider).toService(GroupSelectionUIProviderImpl)
+
+    bindContributionProvider(bind, ActivateGroupTextContribution)
+    bind(ActivateGroupTextProviderImpl).toSelf().inSingletonScope()
+    bind(ActivateGroupTextProvider).toService(ActivateGroupTextProviderImpl)
+
+    bindContributionProvider(bind, TierSelectionUIContribution)
+    bind(TierSelectionUIProviderImpl).toSelf().inSingletonScope()
+    bind(TierSelectionUIProvider).toService(TierSelectionUIProviderImpl)
+
     bind(BusinessAccountGroupSidebarSecondaryItem).toSelf().inSingletonScope()
     bind(SelectGroupContextSidebarSecondaryItem).toSelf().inSingletonScope()
     bind(GroupBillingDetailsSidebarSecondaryItem).toSelf().inSingletonScope()
+    bind(ChangePlanSidebarSecondaryItem).toSelf().inSingletonScope()
     bind(SecondaryItemContribution).toService(BusinessAccountGroupSidebarSecondaryItem)
     bind(SecondaryItemContribution).toService(SelectGroupContextSidebarSecondaryItem)
     bind(SecondaryItemContribution).toService(GroupBillingDetailsSidebarSecondaryItem)
+    bind(SecondaryItemContribution).toService(ChangePlanSidebarSecondaryItem)
 
     bind(AddGroupMainActionContribution).toSelf().inRequestScope()
     bind(MainActionContribution).toService(AddGroupMainActionContribution)

@@ -251,6 +251,14 @@ export class BackendApplication {
         const webpackProxyEnabled = process.env.DEV_PROXY_WEBPACK === 'true'
         const webpackDevServerUrl = process.env.WEBPACK_DEV_SERVER_URL || 'http://localhost:3002'
         const rewriteDevServerPath = (incoming: string): string => {
+            // For static assets with extensions, strip any directory prefix
+            // e.g., /user/runtime.js -> /runtime.js
+            const hasExtension = /\.[^/]+$/.test(incoming)
+            if (hasExtension) {
+                const filename = incoming.substring(incoming.lastIndexOf('/'))
+                return filename
+            }
+            
             if (!frontEndBasePath || frontEndBasePath === '/' || frontEndBasePath === '//') {
                 return incoming
             }
@@ -258,10 +266,8 @@ export class BackendApplication {
                 return incoming
             }
             const remainder = incoming.substring(frontEndBasePath.length)
-            if (remainder.length === 0) {
-                return '/'
-            }
-            return remainder.startsWith('/') ? remainder : `/${remainder}`
+            const result = remainder.length === 0 ? '/' : (remainder.startsWith('/') ? remainder : `/${remainder}`)
+            return result
         }
 
         const webpackProxy = webpackProxyEnabled
@@ -283,12 +289,15 @@ export class BackendApplication {
             this.app.get(`${frontEndBasePath}/*.png`, this.serveGzipped.bind(this, 'image/png'))
             this.app.get(`${frontEndBasePath}/*.svg`, this.serveGzipped.bind(this, 'image/svg+xml'))
         } else if (webpackProxy) {
+            // Proxy static assets under frontEndBasePath to webpack dev server
             this.app.use((req, res, next) => {
-                if (!req.path.startsWith(frontEndBasePath)) {
+                // When frontEndBasePath is '/', all paths start with it, so check differently
+                const effectiveBasePath = (!frontEndBasePath || frontEndBasePath === '/') ? '' : frontEndBasePath
+                if (effectiveBasePath && !req.path.startsWith(effectiveBasePath)) {
                     next()
                     return
                 }
-                const relativePath = req.path.substring(frontEndBasePath.length)
+                const relativePath = effectiveBasePath ? req.path.substring(effectiveBasePath.length) : req.path
                 const isRootRequest = relativePath.length === 0 || relativePath === '/' || relativePath === '//'
                 const hasExtension = /\.[^/]+$/.test(relativePath)
                 if (!hasExtension || isRootRequest) {
@@ -496,9 +505,10 @@ export class BackendApplication {
                 ...this.appConfigProvider.config,
                 staticFilesPath: this.staticFilesPath
             }
-            const html = await this.htmlRenderer.render(req, configWithStaticPath)
-            if (html) {
-                res.type('html').send(html)
+            const result = await this.htmlRenderer.renderWithMetadata(req, configWithStaticPath)
+            if (result) {
+                res.set('Content-Type', result.contentType ?? 'text/html')
+                res.send(result.content)
                 return true
             }
         } catch (error) {

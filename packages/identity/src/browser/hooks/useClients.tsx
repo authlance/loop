@@ -17,7 +17,7 @@ const parseTokens = (link: string) => {
 
 export const useClients = (oauthSDK: OAuth2Api, pageToken: string) => {
     return useQuery(['oauth-clients', pageToken], async () => {
-        const response = await oauthSDK.listOAuth2Clients({ pageSize: 10, pageToken })
+        const response = await oauthSDK.listOAuth2Clients({ pageSize: 10, ...(pageToken ? { pageToken } : {}) })
 
         return {
             data: response.data,

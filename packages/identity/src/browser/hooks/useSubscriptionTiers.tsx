@@ -4,7 +4,6 @@ import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
 import { PaymentTierDto } from '@authlance/common/lib/common/types/subscriptions'
 
 export const useSubscriptionTiers = (
-    userIdentity: string,
     queryOptions: Record<string, unknown> = {}
 ) =>
 {
@@ -12,7 +11,7 @@ export const useSubscriptionTiers = (
     return useQuery<PaymentTierDto[]>(
         ['duna-subscription-tiers'],
         async () => {
-            const res = await subscriptionsApi.authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(userIdentity)
+            const res = await subscriptionsApi.authlanceIdentityApiV1SubscriptionsTiersGet()
             return res.data as unknown as PaymentTierDto[]
         },
         queryOptions as any

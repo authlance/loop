@@ -129,6 +129,14 @@ const LicensesTable: React.FC<LicenseTableProps> = ({
                 },
             },
             {
+                id: 'productKey',
+                header: 'Product Key',
+                cell: ({ row }) => {
+                    const productKey = row.original.license.productKey?.trim() || '—'
+                    return <span className="font-mono text-xs sm:text-sm text-foreground">{productKey}</span>
+                },
+            },
+            {
                 id: 'plan',
                 header: 'Plan',
                 cell: ({ row }) => {

@@ -1,16 +1,18 @@
 {
   "name": "@authlance/ext-scripts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0",
   "description": "NPM scripts for Authlance packages.",
   "files": [
     "authlance-ext",
-    "authlance-run"
+    "authlance-run",
+    "copy-assets.js"
   ],
   "bin": {
     "authlance-ext": "authlance-ext",
     "authlance-run": "authlance-run",
-    "run": "authlance-run"
+    "run": "authlance-run",
+    "authlance-copyassets": "copy-assets.js"
   },
   "scripts": {
     "prepare": "echo 'skip'",
@@ -28,6 +30,6 @@
     "ext:test:watch": "mocha -w --opts ../../configs/mocha.opts \"./lib/**/*.*spec.js\"",
     "ext:test:clean": "rimraf .nyc_output && rimraf coverage",
     "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com",
-    "ext:copyassets": "if [ -d \"src/assets\" ]; then copyfiles -u 1 \"src/assets/**/*\" lib; fi && if [ -d \"src/styles\" ]; then copyfiles -u 1 \"src/styles/**/*\" lib; fi"
+    "ext:copyassets": "node -e 'require(\"@authlance/ext-scripts/copy-assets\")().catch(err => { console.error(err); process.exit(1); })'"
   }
 }

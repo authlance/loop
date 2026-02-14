@@ -34,6 +34,12 @@ export class WebpackGenerator extends AbstractGenerator {
     protected compileWebpackConfig(): string {
         const bundleFileName = this.pck.props.frontend.config.bundleName ? this.pck.props.frontend.config.bundleName : 'bundle.js';
         const entryName = bundleFileName.endsWith('.js') ? bundleFileName.slice(0, -3) : bundleFileName;
+        const frontEndBasePath = this.pck.frontEndBasePath || '/';
+        const isRootBasePath = frontEndBasePath === '/';
+        // Ensure trailing slash for webpack publicPath (required by webpack).
+        // In development, keep 'auto' so the backend proxy's path stripping still works.
+        // In production, set the real base path so chunk URLs resolve correctly.
+        const prodPublicPath = isRootBasePath ? '/' : (frontEndBasePath.endsWith('/') ? frontEndBasePath : frontEndBasePath + '/');
         return `// @ts-check
 const path = require('path');
 const webpack = require('webpack');
@@ -99,7 +105,7 @@ const plugins = [
         filename: 'index.html',
         template: path.resolve(__dirname, 'src-gen/frontend/index.html'),
         inject: true,
-        chunks: ['${entryName}'],
+        chunks: ['${entryName}'],${isRootBasePath ? '' : `\n        publicPath: '${prodPublicPath}',`}
     }),
 ];
 // it should go after copy-plugin in order to compress monaco as well
@@ -128,7 +134,7 @@ module.exports = {
         chunkFilename: '[name].[contenthash:8].chunk.js',
         path: outputPath,
         devtoolModuleFilenameTemplate: 'webpack:///[resource-path]?[loaders]',
-        publicPath: 'auto',
+        publicPath: mode === 'production' ? '${prodPublicPath}' : 'auto',
     },
     optimization: {
         splitChunks: {

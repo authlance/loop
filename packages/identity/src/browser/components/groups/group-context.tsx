@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -18,15 +18,18 @@ import {
     CardHeader,
     CardTitle,
 } from '@authlance/ui/lib/browser/components/card'
+import useGroupSelectionProvider from '../../hooks/useGroupSelectionProvider'
+import useGroupSelectionUIProvider from '../../hooks/useGroupSelectionUIProvider'
 
 export const GroupSelectionComponent: React.FC<Record<string, never>> = () => {
-    const { changeTargetGroup, user } = useContext(SessionContext)
+    const authSession = useContext(SessionContext)
     const navigate = useNavigate()
-    const { isLoading, data: groups } = useGetMyGroups(user ? user.identity : '')
+    const { isLoading, data: groups } = useGetMyGroups(authSession.user ? authSession.user.identity : '')
+    const groupSelectionProvider = useGroupSelectionProvider()
+    const selectionHandler = useMemo(() => groupSelectionProvider.getHandler(), [groupSelectionProvider])
 
     const handleGroupSelection = (group: Group) => {
-        changeTargetGroup(group.name)
-        navigate(`/`)
+        selectionHandler.onGroupSelected(group, authSession, navigate)
     }
 
     useEffect(() => {
@@ -79,7 +82,7 @@ export const GroupSelectionComponent: React.FC<Record<string, never>> = () => {
                 </CardContent>
 
                 <CardFooter className="flex justify-start">
-                    <Button onClick={() => navigate('/activate-business-account')}>New Group</Button>
+                    <Button onClick={() => navigate('/create-organization')}>New Group</Button>
                 </CardFooter>
             </Card>
         </div>
@@ -91,16 +94,18 @@ interface GroupContextComponentProps {
 }
 
 export const GroupContextComponent: React.FC<GroupContextComponentProps> = ({ queryClient }) => {
-    const { user } = useContext(SessionContext)
+    const authSession = useContext(SessionContext)
     const [authenticated, setAuthenticated] = useState(false)
+    const groupSelectionUIProvider = useGroupSelectionUIProvider()
+    const contributedUI = useMemo(() => groupSelectionUIProvider?.getGroupSelectionUI(), [groupSelectionUIProvider])
 
     useEffect(() => {
-        if (!user) {
+        if (!authSession.user) {
             setAuthenticated(false)
         } else {
             setAuthenticated(true)
         }
-    }, [user])
+    }, [authSession.user])
 
     if (!authenticated) {
         return <></>
@@ -108,7 +113,7 @@ export const GroupContextComponent: React.FC<GroupContextComponentProps> = ({ qu
 
     return (
         <QueryClientProvider client={queryClient ?? getOrCreateQueryClient()}>
-            <GroupSelectionComponent />
+            {contributedUI ? contributedUI.getContent(authSession) : <GroupSelectionComponent />}
             <Toaster />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
