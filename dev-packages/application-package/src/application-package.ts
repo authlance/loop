@@ -78,6 +78,11 @@ export class ApplicationPackage {
         return googleAnalyticsMeasurementId;
     }
 
+    get homeUrl(): string | undefined {
+        const { homeUrl } = this.props.frontend.config;
+        return homeUrl;
+    }
+
     get target(): ApplicationProps.Target {
         return this.props.target;
     }
@@ -112,6 +117,9 @@ export class ApplicationPackage {
             }
             if (loopConfig && loopConfig.googleAnalyticsMeasurementId !== undefined && this._props.frontend.config) {
                 this._props.frontend.config.googleAnalyticsMeasurementId = loopConfig.googleAnalyticsMeasurementId;
+            }
+            if (loopConfig && loopConfig.homeUrl !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.homeUrl = loopConfig.homeUrl;
             }
             return this._props;
         }

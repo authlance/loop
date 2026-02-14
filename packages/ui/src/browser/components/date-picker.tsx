@@ -72,6 +72,8 @@ export function DatePicker({ date, onChange }: { date: Date | undefined; onChang
                         selected={date}
                         captionLayout="dropdown"
                         month={month}
+                        startMonth={new Date(1925, 0)}
+                        endMonth={new Date(new Date().getFullYear() + 5, 11)}
                         onMonthChange={setMonth}
                         onSelect={(d) => {
                             onChange(d)

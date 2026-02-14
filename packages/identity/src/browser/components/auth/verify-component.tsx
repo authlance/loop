@@ -5,6 +5,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ProjectContext } from '@authlance/core/lib/browser/common/kratos'
 import { useSdkError } from '@authlance/core/lib/browser/common/kratos-sdk'
 import { useAppSelector } from '@authlance/core/lib/browser/store'
+import { getRuntimeConfig } from '@authlance/core/lib/browser/runtime-config'
 import { SinglePage, PageContent } from '@authlance/core/lib/browser/components/layout/Page'
 import { useBrandIcon } from '@authlance/core/lib/browser/hooks/useBrand'
 import { DefaultDashboardContent } from '@authlance/core/lib/browser/components/layout/default-dashboard-content'
@@ -14,12 +15,13 @@ import { OryWrapper } from '@authlance/core/lib/browser/components/layout/OryWra
 export const Verification = (): JSX.Element => {
     const navigate = useNavigate()
     const brandicon = useBrandIcon()
+    const runtimeConfig = getRuntimeConfig()
     const [flow, setFlow] = useState<VerificationFlow | null>(null)
     const [searchParams, setSearchParams] = useSearchParams()
     const { orySDK } = useContext(ProjectContext)
     const { loading } = useAppSelector((state) => state.auth)
 
-    // const returnTo = searchParams.get('return_to')
+    const returnTo = searchParams.get('return_to') || undefined
 
     const flowId = searchParams.get('flow')
 
@@ -39,13 +41,18 @@ export const Verification = (): JSX.Element => {
     // create a new verification flow
     const createFlow = useCallback(() => {
         orySDK
-            .createBrowserRecoveryFlow()
+            .createBrowserVerificationFlow({ returnTo })
             .then((flow) => {
-                setSearchParams({ flow: flow.data.id })
+                const nextParams = new URLSearchParams()
+                nextParams.set('flow', flow.data.id)
+                if (returnTo) {
+                    nextParams.set('return_to', returnTo)
+                }
+                setSearchParams(nextParams)
                 setFlow(flow.data)
             })
             .catch(sdkErrorHandler)
-    }, [orySDK, setSearchParams, setFlow, sdkErrorHandler])
+    }, [orySDK, setSearchParams, setFlow, sdkErrorHandler, returnTo])
 
     useEffect(() => {
         // it could happen that we are redirected here with an existing flow
@@ -55,7 +62,7 @@ export const Verification = (): JSX.Element => {
             return
         }
         createFlow()
-    }, [])
+    }, [flowId, getFlow, createFlow])
 
     if (!flow || loading) {
         return <DefaultDashboardContent loading={true} />
@@ -83,7 +90,7 @@ export const Verification = (): JSX.Element => {
                                 Card: {
                                     Logo: () => (
                                         <div className="flex items-center justify-center py-4">
-                                            <Link to="/" className='custom-logo inline-flex items-center justify-center relative h-10'>
+                                            <Link to={runtimeConfig.homeUrl || runtimeConfig.basePath || '/'} className='custom-logo inline-flex items-center justify-center relative h-10'>
                                                 <img src={brandicon} className="h-10 w-auto" />
                                             </Link>
                                         </div>

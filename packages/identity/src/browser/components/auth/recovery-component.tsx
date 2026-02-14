@@ -7,6 +7,7 @@ import { useAppSelector } from '@authlance/core/lib/browser/store'
 import { ProjectContext } from '@authlance/core/lib/browser/common/kratos'
 import { useSdkError } from '@authlance/core/lib/browser/common/kratos-sdk'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
+import { getRuntimeConfig } from '@authlance/core/lib/browser/runtime-config'
 import { DefaultDashboardContent } from '@authlance/core/lib/browser/components/layout/default-dashboard-content'
 import { projectConfig } from '@authlance/core/lib/browser/ory/projectConfig'
 import { useBrandIcon } from '@authlance/core/lib/browser/hooks/useBrand'
@@ -16,6 +17,7 @@ const Recovery: React.FC = () => {
     const {} = useContext(SessionContext)
     const navigate = useNavigate()
     const brandicon = useBrandIcon()
+    const runtimeConfig = getRuntimeConfig()
     const [searchParams, setSearchParams] = useSearchParams()
     const token = useAppSelector((state) => state.auth.token)
     const [flow, setFlow] = useState<RecoveryFlow | undefined>(undefined)
@@ -77,7 +79,7 @@ const Recovery: React.FC = () => {
                                 Card: {
                                     Logo: () => (
                                         <div className="flex items-center justify-center py-4">
-                                            <Link to="/" className='custom-logo inline-flex items-center justify-center relative h-10'>
+                                            <Link to={runtimeConfig.homeUrl || runtimeConfig.basePath || '/'} className='custom-logo inline-flex items-center justify-center relative h-10'>
                                                 <img src={brandicon} className="h-10 w-auto" />
                                             </Link>
                                         </div>

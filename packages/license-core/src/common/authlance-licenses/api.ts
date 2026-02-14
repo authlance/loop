@@ -1212,6 +1212,12 @@ export interface InternalHttpControllerLicenseListItem {
      * @type {string}
      * @memberof InternalHttpControllerLicenseListItem
      */
+    'productKey'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InternalHttpControllerLicenseListItem
+     */
     'status'?: string;
 }
 /**

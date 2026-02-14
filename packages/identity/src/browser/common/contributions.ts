@@ -3,6 +3,9 @@ import { inject, injectable, named } from 'inversify'
 import { ContributionProvider } from '@authlance/core/lib/common/contribution-provider'
 import { Group, User } from '@authlance/core/lib/browser/common/auth'
 import { AuthSession } from '@authlance/core/lib/browser/hooks/useAuth'
+import { NavigateFunction } from 'react-router-dom'
+import { PaymentTierDto } from '@authlance/common/lib/common/types/subscriptions'
+import { TierSelectionStepProps } from '../components/groups/TierSelectionStep'
 
 export const UserActionContribution = Symbol('UserActionContribution')
 
@@ -107,5 +110,164 @@ export class RegistrationFooterProviderImpl implements RegistrationFooterProvide
             }
         })
         return footer
+    }
+}
+
+export const GroupSelectionContribution = Symbol('GroupSelectionContribution')
+
+export interface GroupSelectionHandler {
+    onGroupSelected(group: Group, authSession: AuthSession, navigate: NavigateFunction): void
+    getWeight(): number
+}
+
+export interface GroupSelectionContribution {
+    getHandler(): GroupSelectionHandler
+}
+
+export const GroupSelectionProvider = Symbol('GroupSelectionProvider')
+
+export interface GroupSelectionProvider {
+    getHandler(): GroupSelectionHandler
+}
+
+@injectable()
+export class GroupSelectionProviderImpl implements GroupSelectionProvider {
+
+    @inject(ContributionProvider) @named(GroupSelectionContribution)
+    protected readonly contributions: ContributionProvider<GroupSelectionContribution>
+
+    private readonly defaultHandler: GroupSelectionHandler = {
+        onGroupSelected(group: Group, authSession: AuthSession, navigate: NavigateFunction): void {
+            authSession.changeTargetGroup(group.name)
+            navigate('/')
+        },
+        getWeight(): number {
+            return -1
+        },
+    }
+
+    getHandler(): GroupSelectionHandler {
+        if (!this.contributions || this.contributions.getContributions() === undefined) {
+            return this.defaultHandler
+        }
+        let maxWeight = -Infinity
+        let handler: GroupSelectionHandler = this.defaultHandler
+        this.contributions.getContributions().forEach((contribution) => {
+            const h = contribution.getHandler()
+            if (h.getWeight() > maxWeight) {
+                maxWeight = h.getWeight()
+                handler = h
+            }
+        })
+        return handler
+    }
+}
+
+export const GroupSelectionUIContribution = Symbol('GroupSelectionUIContribution')
+
+export interface GroupSelectionUIContribution {
+    getContent(authContext: AuthSession): React.ReactElement
+    getWeight(): number
+}
+
+export const GroupSelectionUIProvider = Symbol('GroupSelectionUIProvider')
+
+export interface GroupSelectionUIProvider {
+    getGroupSelectionUI(): GroupSelectionUIContribution | undefined
+}
+
+@injectable()
+export class GroupSelectionUIProviderImpl implements GroupSelectionUIProvider {
+
+    @inject(ContributionProvider) @named(GroupSelectionUIContribution)
+    protected readonly contributions: ContributionProvider<GroupSelectionUIContribution>
+
+    getGroupSelectionUI(): GroupSelectionUIContribution | undefined {
+        if (!this.contributions || this.contributions.getContributions() === undefined) {
+            return undefined
+        }
+        let maxWeight = -Infinity
+        let result: GroupSelectionUIContribution | undefined = undefined
+        this.contributions.getContributions().forEach((contribution) => {
+            const weight = contribution.getWeight()
+            if (weight > maxWeight) {
+                maxWeight = weight
+                result = contribution
+            }
+        })
+        return result
+    }
+}
+
+export const TierSelectionUIContribution = Symbol('TierSelectionUIContribution')
+
+export interface TierSelectionUIContribution {
+    getContent(props: TierSelectionStepProps): React.ReactElement
+    getWeight(): number
+}
+
+export const TierSelectionUIProvider = Symbol('TierSelectionUIProvider')
+
+export interface TierSelectionUIProvider {
+    getTierSelectionUI(): TierSelectionUIContribution | undefined
+}
+
+@injectable()
+export class TierSelectionUIProviderImpl implements TierSelectionUIProvider {
+
+    @inject(ContributionProvider) @named(TierSelectionUIContribution)
+    protected readonly contributions: ContributionProvider<TierSelectionUIContribution>
+
+    getTierSelectionUI(): TierSelectionUIContribution | undefined {
+        if (!this.contributions || this.contributions.getContributions() === undefined) {
+            return undefined
+        }
+        let maxWeight = -Infinity
+        let result: TierSelectionUIContribution | undefined = undefined
+        this.contributions.getContributions().forEach((contribution) => {
+            const weight = contribution.getWeight()
+            if (weight > maxWeight) {
+                maxWeight = weight
+                result = contribution
+            }
+        })
+        return result
+    }
+}
+
+export const ActivateGroupTextContribution = Symbol('ActivateGroupTextContribution')
+
+export interface ActivateGroupTextContribution {
+    getTitle(paymentTier: PaymentTierDto): string
+    getDescription(paymentTier: PaymentTierDto): React.ReactElement
+    getWeight(): number
+}
+
+export const ActivateGroupTextProvider = Symbol('ActivateGroupTextProvider')
+
+export interface ActivateGroupTextProvider {
+    getTextOverride(): ActivateGroupTextContribution | undefined
+}
+
+@injectable()
+export class ActivateGroupTextProviderImpl implements ActivateGroupTextProvider {
+
+    @inject(ContributionProvider) @named(ActivateGroupTextContribution)
+    protected readonly contributions: ContributionProvider<ActivateGroupTextContribution>
+
+    getTextOverride(): ActivateGroupTextContribution | undefined {
+        if (!this.contributions || this.contributions.getContributions() === undefined) {
+            return undefined
+        }
+        let maxWeight = -Infinity
+        let result: ActivateGroupTextContribution | undefined = undefined
+        this.contributions.getContributions().forEach((contribution) => {
+            const weight = contribution.getWeight()
+            if (weight > maxWeight) {
+                maxWeight = weight
+                result = contribution
+            }
+        })
+        return result
     }
 }

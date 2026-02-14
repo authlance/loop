@@ -29,6 +29,7 @@ const mapUser = (u?: DunaAuthCommonUser | null): User | undefined => {
         groups: u.groups || [],
         groupRoles: (u.groupRoles || []).map((gr) => ({ group: gr.group || '', role: gr.role || '', user: u.identity || '' })),
         state: u.state as CommonIdentityState | undefined,
+        verified: u.verified === true,
     }
 }
 

@@ -2,8 +2,3 @@ wwwroot/*.js
 node_modules
 typings
 dist
-.openapi-generator
-docs
-.npmignore
-.openapi-generator-ignore
-git_push.sh

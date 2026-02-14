@@ -6,7 +6,7 @@ import { Label } from '@authlance/ui/lib/browser/components/label'
 import { Input } from '@authlance/ui/lib/browser/components/input'
 import { Button } from '@authlance/ui/lib/browser/components/button'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { createGroup, updateGroup, useGetGroup, useIsGroupAvailable } from '../../hooks/useGroups'
 import { Group, hasGroupRole } from '@authlance/core/lib/browser/common/auth'
@@ -23,6 +23,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import RenderIf from '@authlance/core/lib/browser/components/RenderIf'
 import { useSubscriptionTiers } from '../../hooks/useSubscriptionTiers'
 import { PaymentTierDto } from '@authlance/common/lib/common/types/subscriptions'
+import { TierSelectionStep } from './TierSelectionStep'
+import useActivateGroupTextProvider from '../../hooks/useActivateGroupTextProvider'
+import useTierSelectionUIProvider from '../../hooks/useTierSelectionUIProvider'
 
 const formSchema = z.object({
     shortName: z.string().min(3, 'Short name is required'),
@@ -429,19 +432,29 @@ export const EditGroup: React.FC<{ group: string }> = ({ group }) => {
     )
 }
 
-export const ActivateGroup: React.FC<{ paymentTiers: PaymentTierDto[] }> = ({ paymentTiers }) => {
+export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ paymentTier }) => {
     const { user, targetGroup, paymentsApi } = useContext(SessionContext)
     const toast = useToast()
     const queryClient = useQueryClient()
     const navigate = useNavigate()
-
-    const targetPaymentTier = useMemo(() => {
-        return paymentTiers[0]
-    }, [paymentTiers])
+    const activateGroupTextProvider = useActivateGroupTextProvider()
+    const textOverride = useMemo(() => activateGroupTextProvider?.getTextOverride(), [activateGroupTextProvider])
 
     const handleSubmit = useCallback(
         async (data: FormValues, signature: string) => {
-            const targetGroup: Group = {
+            if (!user?.verified) {
+                toast.toast({
+                    title: 'Verification required',
+                    description: 'Verify your account before purchasing a subscription.',
+                    variant: 'destructive',
+                    duration: 5000,
+                })
+                const returnTo = `${window.location.pathname}${window.location.search}`
+                navigate(`/verify?return_to=${encodeURIComponent(returnTo)}`)
+                return
+            }
+
+            const targetGroupData: Group = {
                 id: -1,
                 name: data.shortName,
                 longName: data.longName,
@@ -450,9 +463,9 @@ export const ActivateGroup: React.FC<{ paymentTiers: PaymentTierDto[] }> = ({ pa
             }
             try {
                 const response = await paymentsApi.authlancePaymentsApiV1CheckoutSessionPost({
-                    lookupKey: targetPaymentTier.lookupKey,
-                    organizationLongName: targetGroup.longName,
-                    organizationName: targetGroup.name,
+                    lookupKey: paymentTier.lookupKey,
+                    organizationLongName: targetGroupData.longName,
+                    organizationName: targetGroupData.name,
                     signature,
                 })
                 if (response.status === 200) {
@@ -479,13 +492,18 @@ export const ActivateGroup: React.FC<{ paymentTiers: PaymentTierDto[] }> = ({ pa
                 return
             }
         },
-        [targetPaymentTier, toast, queryClient, navigate]
+        [paymentTier, toast, queryClient, navigate, user]
     )
 
     useEffect(() => {
         if (!user) {
             console.error('User is not authenticated')
             navigate('/')
+            return
+        }
+        if (!user.verified) {
+            const returnTo = `${window.location.pathname}${window.location.search}`
+            navigate(`/verify?return_to=${encodeURIComponent(returnTo)}`)
             return
         }
         if (targetGroup) {
@@ -502,7 +520,7 @@ export const ActivateGroup: React.FC<{ paymentTiers: PaymentTierDto[] }> = ({ pa
                 return
             }
         }
-    }, [user, targetGroup])
+    }, [user, targetGroup, navigate])
 
     return (
         <div className="p-4">
@@ -510,14 +528,16 @@ export const ActivateGroup: React.FC<{ paymentTiers: PaymentTierDto[] }> = ({ pa
                 <div className="w-full max-w-md">
                     <GroupForm
                         showAvatar={false}
-                        title="Activate Business Account"
+                        title={textOverride ? textOverride.getTitle(paymentTier) : 'Create Organization and Activate Subscription'}
                         longName=""
                         onSubmit={handleSubmit}
                         aside={false}
                     />
-                    <p className="mb-4 text-sm text-gray-500">
-                        Activating the business account will result in a charge of {targetPaymentTier.price.toFixed(2)} {targetPaymentTier.billingCycle} for the {targetPaymentTier.tierName} plan.
-                    </p>
+                    {textOverride ? textOverride.getDescription(paymentTier) : (
+                        <p className="mb-4 text-sm text-gray-500">
+                            Creating an Organization and Activating a Subscription will result in a charge of {paymentTier.price.toFixed(2)} {paymentTier.billingCycle} for the {paymentTier.tierName} plan.
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
@@ -530,8 +550,15 @@ interface ActivateGroupComponentProps {
 
 export const ActivateGroupComponent: React.FC<ActivateGroupComponentProps> = ({ queryClient }) => {
     const { user } = useContext(SessionContext)
+    const navigate = useNavigate()
+    const location = useLocation()
+    const preSelectedTier = (location.state as { selectedTier?: PaymentTierDto } | null)?.selectedTier ?? null
     const [authenticated, setAuthenticated] = useState(false)
-    const { isLoading, data: subscriptionTiers } = useSubscriptionTiers(user && user.identity ? user.identity : '')
+    const [selectedTier, setSelectedTier] = useState<PaymentTierDto | null>(preSelectedTier)
+    const [step, setStep] = useState<'tier-selection' | 'group-form'>(preSelectedTier ? 'group-form' : 'tier-selection')
+    const { isLoading, data: subscriptionTiers } = useSubscriptionTiers()
+    const tierSelectionUIProvider = useTierSelectionUIProvider()
+    const tierSelectionUIOverride = useMemo(() => tierSelectionUIProvider?.getTierSelectionUI(), [tierSelectionUIProvider])
 
     useEffect(() => {
         if (!user) {
@@ -541,17 +568,86 @@ export const ActivateGroupComponent: React.FC<ActivateGroupComponentProps> = ({ 
         }
     }, [user])
 
+    // Single tier: skip tier selection, go directly to form
+    useEffect(() => {
+        if (subscriptionTiers && subscriptionTiers.length === 1) {
+            setSelectedTier(subscriptionTiers[0])
+            setStep('group-form')
+        }
+    }, [subscriptionTiers])
+
     if (!authenticated) {
         return <></>
+    }
+
+    if (user && !user.verified) {
+        const returnTo = `${window.location.pathname}${window.location.search}`
+        return (
+            <div className="p-4">
+                <Card className="mx-auto max-w-2xl">
+                    <CardHeader>
+                        <h2 className="text-lg font-semibold">Verify your account</h2>
+                    </CardHeader>
+                    <CardContent>
+                        You must verify your account before purchasing a subscription.
+                    </CardContent>
+                    <CardFooter>
+                        <Button onClick={() => navigate(`/verify?return_to=${encodeURIComponent(returnTo)}`)}>
+                            Verify account
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </div>
+        )
     }
 
     if (isLoading || !subscriptionTiers || subscriptionTiers.length === 0) {
         return <DefaultDashboardContent loading={isLoading} />
     }
 
+    const handleTierSelect = (tier: PaymentTierDto) => {
+        setSelectedTier(tier)
+    }
+
+    const handleContinue = () => {
+        if (selectedTier) {
+            setStep('group-form')
+        }
+    }
+
+    const handleBack = () => {
+        setStep('tier-selection')
+    }
+
     return (
         <QueryClientProvider client={queryClient ?? getOrCreateQueryClient()}>
-            <ActivateGroup paymentTiers={subscriptionTiers} />
+            {step === 'tier-selection' && subscriptionTiers.length > 1 && (
+                tierSelectionUIOverride
+                    ? tierSelectionUIOverride.getContent({
+                        tiers: subscriptionTiers,
+                        selectedTier,
+                        onSelectTier: handleTierSelect,
+                        onContinue: handleContinue,
+                    })
+                    : <TierSelectionStep
+                        tiers={subscriptionTiers}
+                        selectedTier={selectedTier}
+                        onSelectTier={handleTierSelect}
+                        onContinue={handleContinue}
+                    />
+            )}
+            {step === 'group-form' && selectedTier && (
+                <div>
+                    {subscriptionTiers.length > 1 && (
+                        <div className="p-4">
+                            <Button variant="ghost" onClick={handleBack}>
+                                &larr; Back to plan selection
+                            </Button>
+                        </div>
+                    )}
+                    <ActivateGroup paymentTier={selectedTier} />
+                </div>
+            )}
             <Toaster />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

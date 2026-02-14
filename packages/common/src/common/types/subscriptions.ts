@@ -1,3 +1,9 @@
+export interface PricingTierDto {
+    setupPrice: number
+    unitPrice: number
+    upTo: number
+}
+
 export interface PaymentTierDto {
     tierName: string
     maxMembers: number
@@ -5,4 +11,5 @@ export interface PaymentTierDto {
     billingCycle: string
     lookupKey: string
     tierDescription: string
+    pricingTiers?: PricingTierDto[]
 }

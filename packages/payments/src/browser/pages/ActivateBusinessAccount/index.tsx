@@ -111,7 +111,7 @@ function BusinessAccountActivateSuccessPage() {
 export class ActivateBusinessAccountPageContribution implements RoutesApplicationContribution {
     getRoute(): RouteContribution {
         return {
-            path: '/activate-business-account',
+            path: '/create-organization',
             component: ActivateBusinessAccountPage,
             name: 'Group Context',
             navBar: false,

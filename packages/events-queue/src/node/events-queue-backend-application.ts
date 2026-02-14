@@ -15,7 +15,7 @@ export class EventsQueueBackendService implements BackendApplicationContribution
 
     public initialize(): void {
         this.validateConfig()
-        this.eventsQueue.initialize(this.appConfig.config.nats.url)
+        this.eventsQueue.initialize(this.appConfig.config.nats.url, this.appConfig.config.nats.prefix)
     }
 
     public onStop(app: express.Application): void {

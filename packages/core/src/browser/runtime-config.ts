@@ -2,6 +2,7 @@ export interface RuntimeConfig {
     basePath?: string
     backendBasePath?: string
     googleAnalyticsMeasurementId?: string
+    homeUrl?: string
 }
 
 let runtimeConfig: RuntimeConfig = {}

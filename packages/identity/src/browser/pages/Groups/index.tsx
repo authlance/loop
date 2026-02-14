@@ -284,7 +284,7 @@ export class BusinessAccountGroupSidebarSecondaryItem implements SecondaryItemCo
                 }
 
                 if (!authContext.user.groups || authContext.user.groups.length === 0) {
-                    authContext.navigateHandler.navigate('/activate-business-account', { replace: true })
+                    authContext.navigateHandler.navigate('/create-organization', { replace: true })
                     return
                 }
 
@@ -357,7 +357,54 @@ export class GroupBillingDetailsSidebarSecondaryItem implements SecondaryItemCon
                     window.location.href = session.url
                 } catch (error) {
                     console.error('Error navigating to group billing details:', error)
-                    authContext.navigateHandler.navigate('/activate-business-account', { replace: true })
+                    authContext.navigateHandler.navigate('/create-organization', { replace: true })
+                }
+            }
+        }
+    }
+}
+
+@injectable()
+export class ChangePlanSidebarSecondaryItem implements SecondaryItemContribution {
+
+    constructor(
+        @inject(GroupContext)
+        private readonly groupContext: GroupContext,
+    ) {
+        // such empty
+    }
+
+    getItem(authContext: AuthSession): SecondaryItem | undefined {
+        if (!authContext || !authContext.user || !authContext.targetGroup) {
+            return undefined
+        }
+        if (authContext.user.groups.length < 1) {
+            return undefined
+        }
+        if (!this.groupContext.isShowGroupBillingDetails()) {
+            return undefined
+        }
+        const targetGroup = authContext.targetGroup
+        let isAdmin = false
+        if (authContext.user.groupRoles && authContext.user.groupRoles.length > 0) {
+            isAdmin = authContext.user.groupRoles.some(role => role.group === targetGroup && (role.role === 'group-admin'))
+        }
+        if (!isAdmin) {
+            return undefined
+        }
+
+        return {
+            id: 'change-plan',
+            label: 'Change Plan',
+            action: () => {
+                authContext.navigateHandler.navigate(`/subscription/change-plan?group=${encodeURIComponent(targetGroup)}`)
+            },
+            condition: async () => {
+                try {
+                    const response = await authContext.subscriptionsApi.authlanceIdentityApiV1ProfileSubscriptionsUserTiersGet(authContext.user!.identity)
+                    return response.data && response.data.length > 1
+                } catch {
+                    return false
                 }
             }
         }

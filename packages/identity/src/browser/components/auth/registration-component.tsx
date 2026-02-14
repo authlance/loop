@@ -6,6 +6,7 @@ import { useSdkError } from '@authlance/core/lib/browser/common/kratos-sdk'
 import { ProjectContext } from '@authlance/core/lib/browser/common/kratos'
 import { PageContent, SinglePage } from '@authlance/core/lib/browser/components/layout/Page'
 import { useAppSelector } from '@authlance/core/lib/browser/store'
+import { getRuntimeConfig } from '@authlance/core/lib/browser/runtime-config'
 import { useBrandIcon } from '@authlance/core/lib/browser/hooks/useBrand'
 import { DefaultDashboardContent } from '@authlance/core/lib/browser/components/layout/default-dashboard-content'
 import { projectConfig } from '@authlance/core/lib/browser/ory/projectConfig'
@@ -15,6 +16,7 @@ import useRegistrationFooterProvider from '../../hooks/useRegistrationFooterProv
 export const RegistrationComponent = () => {
     const { orySDK } = useContext(ProjectContext)
     const brandicon = useBrandIcon()
+    const runtimeConfig = getRuntimeConfig()
     const { loading } = useAppSelector((state) => state.auth)
     const [flow, setFlow] = useState<RegistrationFlow | null>(null)
     const [searchParams, setSearchParams] = useSearchParams()
@@ -93,7 +95,7 @@ export const RegistrationComponent = () => {
                                     Logo: () => (
                                         <div className="flex items-center justify-center py-4">
                                             <Link
-                                                to="/"
+                                                to={runtimeConfig.homeUrl || runtimeConfig.basePath || '/'}
                                                 className="custom-logo inline-flex items-center justify-center relative h-10"
                                             >
                                                 <img src={brandicon} className="h-10 w-auto" />

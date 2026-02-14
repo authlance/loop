@@ -148,6 +148,10 @@ ${stylesSection}
         if (this.pck && this.pck.googleAnalyticsMeasurementId) {
             googleAnalyticsMeasurementId = this.pck.googleAnalyticsMeasurementId;
         }
+        let homeUrl = '';
+        if (this.pck && this.pck.homeUrl) {
+            homeUrl = this.pck.homeUrl;
+        }
         return `// @ts-check
 ${this.ifBrowser("require('es6-promise/auto');")}
 require('reflect-metadata');
@@ -158,6 +162,7 @@ const runtimeConfig = {
     basePath: process.env.REACT_APP_BASE_PATH ?? '${basePath}',
     backendBasePath: process.env.REACT_APP_BACKEND_BASE_PATH ?? '${backendBasePath}',
     googleAnalyticsMeasurementId: process.env.REACT_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID ?? '${googleAnalyticsMeasurementId}',
+    homeUrl: process.env.REACT_APP_HOME_URL ?? '${homeUrl}',
 };
 
 const resolvedBasePath = runtimeConfig.basePath;

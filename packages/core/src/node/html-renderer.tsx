@@ -25,8 +25,15 @@ import { LoopContainer } from '../common'
 import { BASE_DASHBOARD_PATH as BASEDASHBOARDPATH, BRAND_ICON as BRANDICON, BRAND_LOGO as BRANDLOGO } from '../browser/branding'
 
 export const HtmlRenderer = Symbol('HtmlRenderer')
+
+export interface HtmlRenderResult {
+    content: string
+    contentType?: string
+}
+
 export interface HtmlRenderer {
     render(request: express.Request, config: ApplicationConfig): Promise<string | undefined>
+    renderWithMetadata(request: express.Request, config: ApplicationConfig): Promise<HtmlRenderResult | undefined>
 }
 
 export const ServerRenderContainer = Symbol('ServerRenderContainer')
@@ -69,6 +76,11 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
     ) { }
 
     async render(request: express.Request, config: ApplicationConfig): Promise<string | undefined> {
+        const result = await this.renderWithMetadata(request, config)
+        return result?.content
+    }
+
+    async renderWithMetadata(request: express.Request, config: ApplicationConfig): Promise<HtmlRenderResult | undefined> {
         const container = this.getActiveContainer()
         const match = this.matchRequest(request, config, container)
         if (!match) {
@@ -93,6 +105,7 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
             query: contextQuery,
             extraParams: {},
             route: match.contribution,
+            store,
         }
         await this.collectRouteExtraParams(match.contribution, context, container)
         const cacheContributions = this.getPrerenderCacheContributions()
@@ -103,9 +116,21 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         if (match.contribution.prerender.preload) {
             await match.contribution.prerender.preload(context)
         }
-        const documentDefinition = await this.resolveRouteDocument(match.contribution.prerender, context)
+
+        const isRawOutput = !!match.contribution.prerender.rawOutput
+        const rawRenderer = match.contribution.prerender.rawRenderer
+        if (isRawOutput && rawRenderer) {
+            const rawContent = await rawRenderer(context)
+            queryClient.clear()
+            return {
+                content: this.normalizeRawOutput(rawContent),
+                contentType: match.contribution.prerender.contentType ?? 'text/plain',
+            }
+        }
 
         const markup = this.renderMarkup(match.pathname, match.search, queryClient, store, authSession, container)
+
+        const documentDefinition = await this.resolveRouteDocument(match.contribution.prerender, context)
         const dehydratedState = dehydrate(queryClient)
         const serializedQueryState = this.serialize(dehydratedState)
         const serializedStoreState = this.serialize(this.createSerializableStoreState(store))
@@ -113,7 +138,10 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
 
         queryClient.clear()
 
-        return this.composeDocument(markup, serializedStoreState, serializedQueryState, config, documentDefinition, manifest)
+        return {
+            content: this.composeDocument(markup, serializedStoreState, serializedQueryState, config, documentDefinition, manifest),
+            contentType: 'text/html',
+        }
     }
 
     protected resolvePersonalAccessToken(config: ApplicationConfig): string {
@@ -318,6 +346,68 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
             return false
         }
         return true
+    }
+
+    protected renderRawMarkup(pathname: string, search: string, queryClient: QueryClient, store: AppStore, authSession: AuthSession, container: interfaces.Container): string {
+        const provider = this.getRoutesProvider(container)
+        const routeObjects = buildRouteObjects(provider.getRoutes(), next => provider.getChildren(next))
+        const location = search
+            ? `${pathname}${search}`
+            : pathname
+        const router = createMemoryRouter(routeObjects, {
+            initialEntries: [location],
+            initialIndex: 0,
+        })
+
+        const element = (
+            <Provider store={store}>
+                <QueryClientProvider client={queryClient}>
+                    <SessionContext.Provider value={authSession}>
+                        <RouterProvider router={router} />
+                    </SessionContext.Provider>
+                </QueryClientProvider>
+            </Provider>
+        )
+
+        try {
+            return renderToString(element)
+        } finally {
+            router.dispose()
+        }
+    }
+
+    protected normalizeRawOutput(markup: string): string {
+        const stripped = markup.replace(/<!-- -->/g, '')
+        if (stripped.includes('<')) {
+            return stripped
+        }
+        return this.decodeHtmlEntities(stripped)
+    }
+
+    protected decodeHtmlEntities(value: string): string {
+        const named: Record<string, string> = {
+            amp: '&',
+            lt: '<',
+            gt: '>',
+            quot: '"',
+            apos: "'",
+        }
+        return value.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (match, entity) => {
+            if (entity[0] === '#') {
+                const isHex = entity[1]?.toLowerCase() === 'x'
+                const numeric = isHex ? entity.slice(2) : entity.slice(1)
+                const codePoint = parseInt(numeric, isHex ? 16 : 10)
+                if (!Number.isFinite(codePoint) || codePoint <= 0) {
+                    return match
+                }
+                try {
+                    return String.fromCodePoint(codePoint)
+                } catch {
+                    return match
+                }
+            }
+            return Object.prototype.hasOwnProperty.call(named, entity) ? named[entity] : match
+        })
     }
 
     protected renderMarkup(pathname: string, search: string, queryClient: QueryClient, store: AppStore, authSession: AuthSession, container: interfaces.Container): string {

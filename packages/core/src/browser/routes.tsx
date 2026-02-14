@@ -8,8 +8,9 @@ import { NavigateHandler, PathProvider, getBasePath } from './common/common'
 import { match } from 'path-to-regexp'
 import { User, hasGroupRole } from './common/auth'
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics'
+import { DefaultDashboardContent } from './components/layout/default-dashboard-content'
 
-const NotFound: React.FC = () => <div>Not Found</div>
+const NotFound: React.FC = () => <DefaultDashboardContent loading={false} />
 
 export const buildRouteObjects = (
     contributions: RouteContribution[],
