@@ -4,6 +4,15 @@ export interface PricingTierDto {
     upTo: number
 }
 
+export interface TierVariant {
+    label: string
+    billingModel: 'subscription' | 'perpetual_auto' | 'perpetual_manual'
+    lookupKey: string
+    price: number
+    billingCycle: string
+    description?: string
+}
+
 export interface PaymentTierDto {
     tierName: string
     maxMembers: number
@@ -12,4 +21,5 @@ export interface PaymentTierDto {
     lookupKey: string
     tierDescription: string
     pricingTiers?: PricingTierDto[]
+    variants?: TierVariant[]   // when present, TierCard renders a billing toggle
 }

@@ -5,7 +5,7 @@ import { RoutesApplicationContribution } from '@authlance/core/lib/common/routes
 import { MyUserProfilePageContribution, UserProfilePageContribution } from './pages/User'
 import { AddOauthClientActionContribution, OauthClientCreatePageContribution, OauthClientsPageContribution, OauthClientUpdatePageContribution } from './pages/OidcClients'
 import { bindContributionProvider } from '@authlance/core/lib/common/contribution-provider'
-import { ActivateGroupTextContribution, ActivateGroupTextProvider, ActivateGroupTextProviderImpl, GroupActionContribution, GroupActionsProvider, GroupActionsProviderImpl, GroupSelectionContribution, GroupSelectionProvider, GroupSelectionProviderImpl, GroupSelectionUIContribution, GroupSelectionUIProvider, GroupSelectionUIProviderImpl, RegistrationFooterContribution, RegistrationFooterProvider, RegistrationFooterProviderImpl, TierSelectionUIContribution, TierSelectionUIProvider, TierSelectionUIProviderImpl, UserActionContribution, UserActionsProvider, UserActionsProviderImpl } from './common/contributions'
+import { ActivateGroupTextContribution, ActivateGroupTextProvider, ActivateGroupTextProviderImpl, GroupActionContribution, GroupActionsProvider, GroupActionsProviderImpl, GroupSelectionContribution, GroupSelectionProvider, GroupSelectionProviderImpl, GroupSelectionUIContribution, GroupSelectionUIProvider, GroupSelectionUIProviderImpl, RegistrationFooterContribution, RegistrationFooterProvider, RegistrationFooterProviderImpl, TierSelectionUIContribution, TierSelectionUIProvider, TierSelectionUIProviderImpl, TierSelectionVisibilityContribution, TierSelectionVisibilityProvider, TierSelectionVisibilityProviderImpl, UserActionContribution, UserActionsProvider, UserActionsProviderImpl } from './common/contributions'
 import { AddGroupMainActionContribution, BusinessAccountGroupSidebarSecondaryItem, ChangePlanSidebarSecondaryItem, GroupBillingDetailsSidebarSecondaryItem, GroupsAddMemberPageContribution, GroupsCreatePageContribution, GroupsEditMemberPageContribution, GroupsEditPageContribution, GroupsPageContribution, GroupsPaginationPageContribution, MyGroupsEditPageContribution, UserGroupsPageContribution } from './pages/Groups'
 import { SecondaryItemContribution, MainActionContribution } from '@authlance/core/lib/browser/common/ui-contributions'
 import { GroupContextPageContribution, SelectGroupContextSidebarSecondaryItem } from './pages/GroupContext'
@@ -117,6 +117,10 @@ export default new ContainerModule((bind) => {
     bindContributionProvider(bind, TierSelectionUIContribution)
     bind(TierSelectionUIProviderImpl).toSelf().inSingletonScope()
     bind(TierSelectionUIProvider).toService(TierSelectionUIProviderImpl)
+
+    bindContributionProvider(bind, TierSelectionVisibilityContribution)
+    bind(TierSelectionVisibilityProviderImpl).toSelf().inSingletonScope()
+    bind(TierSelectionVisibilityProvider).toService(TierSelectionVisibilityProviderImpl)
 
     bind(BusinessAccountGroupSidebarSecondaryItem).toSelf().inSingletonScope()
     bind(SelectGroupContextSidebarSecondaryItem).toSelf().inSingletonScope()

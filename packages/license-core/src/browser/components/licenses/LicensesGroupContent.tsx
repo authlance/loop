@@ -60,6 +60,9 @@ interface LicenseSubscriptionState {
     canManage: boolean
     customerId?: string
     seats?: number
+    licenseType?: string
+    maintenanceExpiresAt?: Date
+    canBuyMaintenance: boolean
 }
 
 type LicenseSubscriptionStateMap = Record<string, LicenseSubscriptionState>
@@ -75,6 +78,8 @@ interface LicenseTableProps {
     subscriptionStates?: LicenseSubscriptionStateMap
     onManageSubscription?: (licenseId: string) => void
     managingSubscriptionId?: string
+    onBuyMaintenance?: (licenseId: string) => void
+    buyingMaintenanceId?: string
 }
 
 const LicensesTable: React.FC<LicenseTableProps> = ({
@@ -88,6 +93,8 @@ const LicensesTable: React.FC<LicenseTableProps> = ({
     subscriptionStates,
     onManageSubscription,
     managingSubscriptionId,
+    onBuyMaintenance,
+    buyingMaintenanceId,
 }) => {
     const formatDateLabel = useCallback((value: string | undefined) => {
         if (!value) {
@@ -115,7 +122,11 @@ const LicensesTable: React.FC<LicenseTableProps> = ({
     }, [rows])
 
     const columns = useMemo<ColumnDef<LicenseRow>[]>(
-        () => [
+        () => {
+            const hasPerpetualLicenses = Object.values(subscriptionStates ?? {}).some(
+                (s) => s.licenseType?.startsWith('perpetual')
+            )
+            return [
             {
                 id: 'licenseId',
                 header: 'License',
@@ -180,10 +191,39 @@ const LicensesTable: React.FC<LicenseTableProps> = ({
             {
                 id: 'expires',
                 header: 'Expires',
-                cell: ({ row }) => (
-                    <span className="text-sm text-muted-foreground">{formatDateLabel(row.original.license.exp)}</span>
-                ),
+                cell: ({ row }) => {
+                    const licenseId = row.original.license.licenseId?.trim() || ''
+                    const state = licenseId ? subscriptionStates?.[licenseId] : undefined
+                    const isPerpetual = state?.licenseType?.startsWith('perpetual')
+                    if (isPerpetual) {
+                        return <Badge variant="outline">Perpetual</Badge>
+                    }
+                    return (
+                        <span className="text-sm text-muted-foreground">
+                            {formatDateLabel(row.original.license.exp)}
+                        </span>
+                    )
+                },
             },
+            ...(hasPerpetualLicenses ? [{
+                id: 'maintenance',
+                header: 'Maintenance',
+                cell: ({ row }: { row: import('@tanstack/react-table').Row<LicenseRow> }) => {
+                    const licenseId = row.original.license.licenseId?.trim() || ''
+                    const state = licenseId ? subscriptionStates?.[licenseId] : undefined
+                    if (!state?.licenseType?.startsWith('perpetual')) {
+                        return <span className="text-sm text-muted-foreground">—</span>
+                    }
+                    if (!state.maintenanceExpiresAt) {
+                        return <span className="text-sm text-muted-foreground">—</span>
+                    }
+                    return (
+                        <span className="text-sm text-muted-foreground">
+                            {state.maintenanceExpiresAt.toLocaleDateString()}
+                        </span>
+                    )
+                },
+            } as ColumnDef<LicenseRow>] : []),
             {
                 id: 'status',
                 header: 'Status',
@@ -212,6 +252,13 @@ const LicensesTable: React.FC<LicenseTableProps> = ({
                                 subscriptionState.customerId
                         ) && Boolean(onManageSubscription)
                     const managing = Boolean(managingSubscriptionId && managingSubscriptionId === licenseId)
+                    const canBuyMaintenanceItem =
+                        Boolean(
+                            licenseId &&
+                                subscriptionState?.status === 'ready' &&
+                                subscriptionState.canBuyMaintenance
+                        ) && Boolean(onBuyMaintenance)
+                    const buyingMaintenance = Boolean(buyingMaintenanceId && buyingMaintenanceId === licenseId)
 
                     return (
                         <div className="flex justify-end">
@@ -277,14 +324,39 @@ const LicensesTable: React.FC<LicenseTableProps> = ({
                                             )}
                                         </DropdownMenuItem>
                                     )}
+                                    {canBuyMaintenanceItem && (
+                                        <DropdownMenuItem
+                                            disabled={!licenseId || downloading || buyingMaintenance}
+                                            onSelect={(event) => {
+                                                event.preventDefault()
+                                                if (!licenseId || downloading || buyingMaintenance) {
+                                                    return
+                                                }
+                                                onBuyMaintenance?.(licenseId)
+                                            }}
+                                        >
+                                            {buyingMaintenance ? (
+                                                <>
+                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    Redirecting…
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <CreditCard className="mr-2 h-4 w-4" />
+                                                    Buy maintenance renewal
+                                                </>
+                                            )}
+                                        </DropdownMenuItem>
+                                    )}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
                     )
                 },
             },
-        ],
-    [downloadingId, formatDateLabel, managingSubscriptionId, onDownload, onManageSubscription, subscriptionStates])
+        ]
+        },
+    [buyingMaintenanceId, downloadingId, formatDateLabel, managingSubscriptionId, onBuyMaintenance, onDownload, onManageSubscription, subscriptionStates])
 
     if (loading && !licenses?.items) {
         return <DefaultDashboardContent loading={true} />
@@ -494,6 +566,7 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
     const [downloadingId, setDownloadingId] = useState<string | undefined>(undefined)
     const [subscriptionStates, setSubscriptionStates] = useState<LicenseSubscriptionStateMap>({})
     const [managingSubscriptionId, setManagingSubscriptionId] = useState<string | undefined>(undefined)
+    const [buyingMaintenanceId, setBuyingMaintenanceId] = useState<string | undefined>(undefined)
     const query = useMemo<LicenseListQuery>(() => ({ page, pageSize: 10 }), [page])
 
     const {
@@ -570,6 +643,14 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
                     (normalizedInterval !== '' && normalizedInterval !== 'one_time')
                 const canManage = Boolean(rawCustomerId && supportsSubscriptionBilling)
                 const seats = typeof licenseSummary?.seats === 'number' ? licenseSummary.seats : undefined
+                const licenseType =
+                    typeof licenseSummary?.licenseType === 'string'
+                        ? licenseSummary.licenseType.trim()
+                        : 'subscription'
+                const rawMaintenance = licenseSummary?.maintenanceExpiresAt
+                const maintenanceExpiresAt =
+                    typeof rawMaintenance === 'string' ? new Date(rawMaintenance) : undefined
+                const canBuyMaintenance = licenseType === 'perpetual_manual'
                 setSubscriptionStates((previous) => ({
                     ...previous,
                     [licenseId]: {
@@ -577,6 +658,9 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
                         canManage,
                         customerId: rawCustomerId || undefined,
                         seats,
+                        licenseType,
+                        maintenanceExpiresAt,
+                        canBuyMaintenance,
                     },
                 }))
             } catch (error) {
@@ -585,6 +669,7 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
                     [licenseId]: {
                         status: 'error',
                         canManage: false,
+                        canBuyMaintenance: false,
                         seats: previous[licenseId]?.seats,
                     },
                 }))
@@ -624,7 +709,7 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
                     next = { ...previous }
                     updated = true
                 }
-                next[licenseId] = { status: 'loading', canManage: false }
+                next[licenseId] = { status: 'loading', canManage: false, canBuyMaintenance: false }
             }
             return updated ? next : previous
         })
@@ -678,6 +763,20 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
             }
         },
         [paymentsApi, subscriptionStates, toast]
+    )
+
+    const handleBuyMaintenance = useCallback(
+        (licenseId: string) => {
+            const group = activeGroup
+            if (!group || !licenseId) {
+                return
+            }
+            setBuyingMaintenanceId(licenseId)
+            navigate(
+                `/subscription/buy-maintenance?group=${encodeURIComponent(group)}&license=${encodeURIComponent(licenseId)}`
+            )
+        },
+        [activeGroup, navigate]
     )
 
     const licensesInitialLoading = licensesLoading && !licenses
@@ -745,6 +844,8 @@ export const LicensesGroupContent: React.FC<LicensesGroupContentProps> = ({ mode
                 subscriptionStates={subscriptionStates}
                 onManageSubscription={handleManageSubscription}
                 managingSubscriptionId={managingSubscriptionId}
+                onBuyMaintenance={handleBuyMaintenance}
+                buyingMaintenanceId={buyingMaintenanceId}
             />
         </div>
     )

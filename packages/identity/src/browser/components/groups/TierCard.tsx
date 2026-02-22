@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@authlance/ui/lib/browser/components/card'
 import { Button } from '@authlance/ui/lib/browser/components/button'
-import { PaymentTierDto, PricingTierDto } from '@authlance/common/lib/common/types/subscriptions'
+import { PaymentTierDto, PricingTierDto, TierVariant } from '@authlance/common/lib/common/types/subscriptions'
 import { cn } from '@authlance/ui/lib/browser/utils/cn'
 import { Check } from 'lucide-react'
 
@@ -32,8 +32,47 @@ export const TierCard: React.FC<TierCardProps> = ({
     onSelect,
     disabled = false,
 }) => {
-    const formatPrice = (price: number, cycle: string) => {
-        return `$${price.toFixed(2)}/${cycle}`
+    const hasVariants = Array.isArray(tier.variants) && tier.variants.length > 0
+
+    const subscriptionVariants = hasVariants
+        ? tier.variants!.filter(v => v.billingModel === 'subscription')
+        : []
+    const perpetualVariants = hasVariants
+        ? tier.variants!.filter(v => v.billingModel === 'perpetual_auto' || v.billingModel === 'perpetual_manual')
+        : []
+    const hasPerpetual = perpetualVariants.length > 0
+
+    const [primaryModel, setPrimaryModel] = useState<'subscription' | 'perpetual'>(
+        hasPerpetual && subscriptionVariants.length === 0 ? 'perpetual' : 'subscription'
+    )
+    const [selectedPerpetualVariant, setSelectedPerpetualVariant] = useState<TierVariant | null>(
+        perpetualVariants[0] ?? null
+    )
+
+    const activeVariant: TierVariant | null =
+        !hasVariants ? null
+        : primaryModel === 'subscription' ? (subscriptionVariants[0] ?? null)
+        : selectedPerpetualVariant
+
+    const displayPrice = activeVariant?.price ?? tier.price
+    const displayCycle = activeVariant?.billingCycle ?? tier.billingCycle
+    const displayDescription = activeVariant?.description ?? tier.tierDescription
+
+    const formatPrice = (price: number, cycle: string) => `$${price.toFixed(2)}/${cycle}`
+
+    const handleSelect = () => {
+        if (disabled || isCurrent) { return }
+        if (!activeVariant) {
+            onSelect(tier)
+            return
+        }
+        // Merge variant into base tier so downstream code reads lookupKey/price from top level
+        onSelect({
+            ...tier,
+            lookupKey: activeVariant.lookupKey,
+            price: activeVariant.price,
+            billingCycle: activeVariant.billingCycle,
+        })
     }
 
     return (
@@ -44,19 +83,71 @@ export const TierCard: React.FC<TierCardProps> = ({
                 isCurrent && 'bg-muted',
                 disabled && 'opacity-50 cursor-not-allowed'
             )}
-            onClick={() => !disabled && !isCurrent && onSelect(tier)}
+            onClick={handleSelect}
         >
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle>{tier.tierName}</CardTitle>
                     {selected && <Check className="h-5 w-5 text-primary" />}
                 </div>
-                <div className="text-2xl font-bold">
-                    {formatPrice(tier.price, tier.billingCycle)}
+
+                {/* Primary billing model toggle — only when both subscription and perpetual variants exist */}
+                {hasVariants && subscriptionVariants.length > 0 && hasPerpetual && (
+                    <div className="flex rounded-md border border-border overflow-hidden text-xs mt-1">
+                        <button
+                            type="button"
+                            className={cn(
+                                'flex-1 px-2 py-1 transition-colors',
+                                primaryModel === 'subscription'
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'bg-background text-muted-foreground hover:bg-muted'
+                            )}
+                            onClick={(e) => { e.stopPropagation(); setPrimaryModel('subscription') }}
+                        >
+                            Subscription
+                        </button>
+                        <button
+                            type="button"
+                            className={cn(
+                                'flex-1 px-2 py-1 transition-colors',
+                                primaryModel === 'perpetual'
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'bg-background text-muted-foreground hover:bg-muted'
+                            )}
+                            onClick={(e) => { e.stopPropagation(); setPrimaryModel('perpetual') }}
+                        >
+                            Perpetual
+                        </button>
+                    </div>
+                )}
+
+                {/* Perpetual sub-toggle — auto vs manual — only when perpetual is selected and both variants exist */}
+                {hasVariants && primaryModel === 'perpetual' && perpetualVariants.length > 1 && (
+                    <div className="flex rounded-md border border-border overflow-hidden text-xs mt-1">
+                        {perpetualVariants.map((v) => (
+                            <button
+                                key={v.billingModel}
+                                type="button"
+                                className={cn(
+                                    'flex-1 px-2 py-1 transition-colors',
+                                    selectedPerpetualVariant?.billingModel === v.billingModel
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-background text-muted-foreground hover:bg-muted'
+                                )}
+                                onClick={(e) => { e.stopPropagation(); setSelectedPerpetualVariant(v) }}
+                            >
+                                {v.label}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                <div className="text-2xl font-bold mt-2">
+                    {formatPrice(displayPrice, displayCycle)}
                 </div>
             </CardHeader>
             <CardContent className="flex-1">
-                <CardDescription>{tier.tierDescription}</CardDescription>
+                <CardDescription>{displayDescription}</CardDescription>
                 {tier.maxMembers > 0 && (
                     <p className="text-sm text-muted-foreground mt-2">
                         Up to {tier.maxMembers} members
@@ -78,19 +169,12 @@ export const TierCard: React.FC<TierCardProps> = ({
             </CardContent>
             <CardFooter>
                 {isCurrent ? (
-                    <Button variant="outline" disabled className="w-full">
-                        Current Plan
-                    </Button>
+                    <Button variant="outline" disabled className="w-full">Current Plan</Button>
                 ) : (
                     <Button
                         variant={selected ? 'default' : 'outline'}
                         className="w-full"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            if (!disabled) {
-                                onSelect(tier)
-                            }
-                        }}
+                        onClick={(e) => { e.stopPropagation(); handleSelect() }}
                         disabled={disabled}
                     >
                         {selected ? 'Selected' : 'Select'}

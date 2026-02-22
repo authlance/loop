@@ -4,6 +4,8 @@ import { User } from '@authlance/core/lib/browser/common/auth'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
 import type { AdminApi } from '@authlance/core/lib/browser/common/authlance-sdk'
 
+const SYSTEM_ONLY_ROLES = ['sysadmin']
+
 export const useGetRoles = (
     user: User | undefined,
     page: number | undefined,
@@ -14,7 +16,7 @@ export const useGetRoles = (
     const { adminApi, usersApi } = useContext(SessionContext)
     const p = page ? page : 1
     const filter = params?.filter
-    const key = ['duna-roles', `page-${p}`, `${filter ? `filter-${filter}` : 'no-filter'}`]
+    const key = ['duna-roles', systemRoles ? 'system' : 'group', `page-${p}`, `${filter ? `filter-${filter}` : 'no-filter'}`]
     return useQuery<{ roles: string[]; pages: number }>(
         key,
         async () => {
@@ -23,7 +25,9 @@ export const useGetRoles = (
                 return { roles: res.data.roles || [], pages: res.data.pages || 0 }
             }
             const res = await adminApi!.authlanceIdentityApiV1AdminRolesPageGet(p, undefined, filter as any)
-            return { roles: res.data.roles || [], pages: res.data.pages || 0 }
+            const allRoles = res.data.roles || []
+            const roles = systemRoles ? allRoles : allRoles.filter((r: string) => !SYSTEM_ONLY_ROLES.includes(r))
+            return { roles, pages: res.data.pages || 0 }
         },
         queryOptions as any
     )
@@ -44,14 +48,20 @@ export const assignUserRoles = async ( identity: string, roles: string[], queryC
     try {
         const response = await adminApi.authlanceIdentityApiV1AdminUserRolePut({ roles, identity } as any)
         if (response.status !== 200) {
-            console.error('Error deleting role', response)
-            return { error: 'Error deleting role' }
+            console.error('Error assigning roles', response)
+            return { error: 'Error assigning roles' }
+        }
+        const updatedUser = response.data as unknown as User
+        const missingRoles = roles.filter((r) => !updatedUser.roles?.includes(r))
+        if (missingRoles.length > 0) {
+            console.error('Roles not saved by server:', missingRoles)
+            return { error: `Failed to assign roles: ${missingRoles.join(', ')}` }
         }
         await queryClient.invalidateQueries(['duna-roles'])
         await queryClient.invalidateQueries(['duna-user', `identity-${identity}`])
-        return { user: response.data as unknown as User }
+        return { user: updatedUser }
     } catch (error) {
-        console.error('Error deleting role', error)
-        return { error: 'Error deleting role' }
+        console.error('Error assigning roles', error)
+        return { error: 'Error assigning roles' }
     }
 }

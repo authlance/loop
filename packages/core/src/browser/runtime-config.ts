@@ -3,6 +3,9 @@ export interface RuntimeConfig {
     backendBasePath?: string
     googleAnalyticsMeasurementId?: string
     homeUrl?: string
+    showProfileGender?: boolean
+    showProfileBirthdate?: boolean
+    showChangePassword?: boolean
 }
 
 let runtimeConfig: RuntimeConfig = {}

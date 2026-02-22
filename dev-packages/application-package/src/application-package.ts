@@ -83,6 +83,21 @@ export class ApplicationPackage {
         return homeUrl;
     }
 
+    get showProfileGender(): boolean {
+        const { showProfileGender } = this.props.frontend.config;
+        return showProfileGender ?? true;
+    }
+
+    get showProfileBirthdate(): boolean {
+        const { showProfileBirthdate } = this.props.frontend.config;
+        return showProfileBirthdate ?? true;
+    }
+
+    get showChangePassword(): boolean {
+        const { showChangePassword } = this.props.frontend.config;
+        return showChangePassword ?? true;
+    }
+
     get target(): ApplicationProps.Target {
         return this.props.target;
     }
@@ -121,6 +136,15 @@ export class ApplicationPackage {
             if (loopConfig && loopConfig.homeUrl !== undefined && this._props.frontend.config) {
                 this._props.frontend.config.homeUrl = loopConfig.homeUrl;
             }
+            if (loopConfig && loopConfig.showProfileGender !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.showProfileGender = loopConfig.showProfileGender;
+            }
+            if (loopConfig && loopConfig.showProfileBirthdate !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.showProfileBirthdate = loopConfig.showProfileBirthdate;
+            }
+            if (loopConfig && loopConfig.showChangePassword !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.showChangePassword = loopConfig.showChangePassword;
+            }
             return this._props;
         }
 
@@ -134,6 +158,18 @@ export class ApplicationPackage {
                 targetProps.frontend.config.webApp = loopConfig.webApp;
             } else {
                 targetProps.frontend.config.webApp = false;
+            }
+            if (loopConfig && loopConfig.homeUrl !== undefined && targetProps.frontend.config) {
+                targetProps.frontend.config.homeUrl = loopConfig.homeUrl;
+            }
+            if (loopConfig && loopConfig.showProfileGender !== undefined && targetProps.frontend.config) {
+                targetProps.frontend.config.showProfileGender = loopConfig.showProfileGender;
+            }
+            if (loopConfig && loopConfig.showProfileBirthdate !== undefined && targetProps.frontend.config) {
+                targetProps.frontend.config.showProfileBirthdate = loopConfig.showProfileBirthdate;
+            }
+            if (loopConfig && loopConfig.showChangePassword !== undefined && targetProps.frontend.config) {
+                targetProps.frontend.config.showChangePassword = loopConfig.showChangePassword;
             }
         }
         this._props = targetProps;
