@@ -1,0 +1,20 @@
+# GithubComAuthlanceLicenseoperatorPkgPaymentsGetSubscriptionSessionRequest
+
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**sessionId** | **string** |  | [optional] [default to undefined]
+
+## Example
+
+```typescript
+import { GithubComAuthlanceLicenseoperatorPkgPaymentsGetSubscriptionSessionRequest } from './api';
+
+const instance: GithubComAuthlanceLicenseoperatorPkgPaymentsGetSubscriptionSessionRequest = {
+    sessionId,
+};
+```
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

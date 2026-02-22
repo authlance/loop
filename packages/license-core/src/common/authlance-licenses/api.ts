@@ -147,7 +147,39 @@ export interface GithubComAuthlanceLicenseoperatorPkgPaymentsCreateCheckoutSessi
     'signature'?: string;
 }
 /**
- * 
+ * CreateMaintenanceCheckoutRequest is the body for POST /maintenance-checkout.
+ * @export
+ * @interface GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest
+ */
+export interface GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest {
+    /**
+     *
+     * @type {string}
+     * @memberof GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest
+     */
+    'groupName'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest
+     */
+    'licenseId'?: string;
+}
+/**
+ * MaintenanceCheckoutResponse contains the Stripe Checkout redirect URL.
+ * @export
+ * @interface GithubComAuthlanceLicenseoperatorPkgPaymentsMaintenanceCheckoutResponse
+ */
+export interface GithubComAuthlanceLicenseoperatorPkgPaymentsMaintenanceCheckoutResponse {
+    /**
+     *
+     * @type {string}
+     * @memberof GithubComAuthlanceLicenseoperatorPkgPaymentsMaintenanceCheckoutResponse
+     */
+    'url'?: string;
+}
+/**
+ *
  * @export
  * @interface GithubComAuthlanceLicenseoperatorPkgPaymentsCreateCustomerPortalSessionRequest
  */
@@ -376,14 +408,26 @@ export interface GithubComAuthlanceLicenseoperatorPkgPaymentsLicenseVerification
      */
     'stripeCustomerId'?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GithubComAuthlanceLicenseoperatorPkgPaymentsLicenseVerificationSummary
      */
     'stripeInvoiceId'?: string;
+    /**
+     * License type: subscription, perpetual_auto, or perpetual_manual
+     * @type {string}
+     * @memberof GithubComAuthlanceLicenseoperatorPkgPaymentsLicenseVerificationSummary
+     */
+    'licenseType'?: string;
+    /**
+     * Maintenance expiry date for perpetual licenses
+     * @type {string}
+     * @memberof GithubComAuthlanceLicenseoperatorPkgPaymentsLicenseVerificationSummary
+     */
+    'maintenanceExpiresAt'?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface GithubComAuthlanceLicenseoperatorPkgPaymentsPaymentBillingAddress
  */
@@ -1909,13 +1953,19 @@ export interface InternalHttpControllerPublicProductResponse {
      */
     'features'?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof InternalHttpControllerPublicProductResponse
      */
     'interval'?: string;
     /**
-     * 
+     * License type: subscription, one_off, or perpetual_manual
+     * @type {string}
+     * @memberof InternalHttpControllerPublicProductResponse
+     */
+    'licenseType'?: string;
+    /**
+     *
      * @type {string}
      * @memberof InternalHttpControllerPublicProductResponse
      */
@@ -3687,6 +3737,45 @@ export const PaymentsApiAxiosParamCreator = function (configuration?: Configurat
             };
         },
         /**
+         * Creates a one-time Stripe checkout for renewing maintenance on a perpetual license.
+         * @summary Create maintenance checkout session
+         * @param {GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest} request Maintenance checkout request
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceLicensePaymentsApiV1MaintenanceCheckoutPost: async (request: GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'request' is not null or undefined
+            assertParamExists('authlanceLicensePaymentsApiV1MaintenanceCheckoutPost', 'request', request)
+            const localVarPath = `/authlance/license/payments/api/v1/maintenance-checkout`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication BearerAuth required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(request, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Exports captured payments matching the filters as a CSV file.
          * @summary Export payments as CSV
          * @param {string} [from] Inclusive paid at lower bound (RFC3339 or YYYY-MM-DD)
@@ -3961,6 +4050,19 @@ export const PaymentsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Creates a one-time Stripe checkout for renewing maintenance on a perpetual license.
+         * @summary Create maintenance checkout session
+         * @param {GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest} request Maintenance checkout request
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authlanceLicensePaymentsApiV1MaintenanceCheckoutPost(request: GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GithubComAuthlanceLicenseoperatorPkgPaymentsMaintenanceCheckoutResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authlanceLicensePaymentsApiV1MaintenanceCheckoutPost(request, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PaymentsApi.authlanceLicensePaymentsApiV1MaintenanceCheckoutPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Exports captured payments matching the filters as a CSV file.
          * @summary Export payments as CSV
          * @param {string} [from] Inclusive paid at lower bound (RFC3339 or YYYY-MM-DD)
@@ -4066,6 +4168,16 @@ export const PaymentsApiFactory = function (configuration?: Configuration, baseP
             return localVarFp.authlanceLicensePaymentsApiV1CustomerPortalPost(request, options).then((request) => request(axios, basePath));
         },
         /**
+         * Creates a one-time Stripe checkout for renewing maintenance on a perpetual license.
+         * @summary Create maintenance checkout session
+         * @param {GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest} request Maintenance checkout request
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authlanceLicensePaymentsApiV1MaintenanceCheckoutPost(request: GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest, options?: RawAxiosRequestConfig): AxiosPromise<GithubComAuthlanceLicenseoperatorPkgPaymentsMaintenanceCheckoutResponse> {
+            return localVarFp.authlanceLicensePaymentsApiV1MaintenanceCheckoutPost(request, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Exports captured payments matching the filters as a CSV file.
          * @summary Export payments as CSV
          * @param {string} [from] Inclusive paid at lower bound (RFC3339 or YYYY-MM-DD)
@@ -4157,6 +4269,18 @@ export class PaymentsApi extends BaseAPI {
      */
     public authlanceLicensePaymentsApiV1CustomerPortalPost(request: GithubComAuthlanceLicenseoperatorPkgPaymentsCreateCustomerPortalSessionRequest, options?: RawAxiosRequestConfig) {
         return PaymentsApiFp(this.configuration).authlanceLicensePaymentsApiV1CustomerPortalPost(request, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Creates a one-time Stripe checkout for renewing maintenance on a perpetual license.
+     * @summary Create maintenance checkout session
+     * @param {GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest} request Maintenance checkout request
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PaymentsApi
+     */
+    public authlanceLicensePaymentsApiV1MaintenanceCheckoutPost(request: GithubComAuthlanceLicenseoperatorPkgPaymentsCreateMaintenanceCheckoutRequest, options?: RawAxiosRequestConfig) {
+        return PaymentsApiFp(this.configuration).authlanceLicensePaymentsApiV1MaintenanceCheckoutPost(request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

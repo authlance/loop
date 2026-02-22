@@ -14,7 +14,7 @@ import { updateUser } from '../hooks/useUser'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
 import { Avatar, AvatarFallback, AvatarImage } from '@authlance/ui/lib/browser/components/avatar'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { SettingsFlow, UiNode } from '@ory/client'
+import { FrontendApi, SettingsFlow, UiNode } from '@ory/client'
 import { ProjectContext } from '@authlance/core/lib/browser/common/kratos'
 import { useSdkError } from '@authlance/core/lib/browser/common/kratos-sdk'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@authlance/ui/lib/browser/components/dialog'
@@ -22,6 +22,7 @@ import RenderIf from '@authlance/core/lib/browser/components/RenderIf'
 import LayoutContainer from '@authlance/core/lib/browser/containers/LayoutContainer'
 import moment from 'moment'
 import { OryWrapper } from '@authlance/core/lib/browser/components/layout/OryWrapper'
+import { getRuntimeConfig } from '@authlance/core/lib/browser/runtime-config'
 
 function getPasswordNodes(nodes: UiNode[]) {
   return nodes.filter((n: any) => {
@@ -42,62 +43,82 @@ function getAttr(nodes: UiNode[], name: string) {
   return findNode(nodes, name)?.attributes?.value ?? ''
 }
 
-export function PasswordOnlySettings({ flow }: { flow: SettingsFlow }) {
-  const nodes = getPasswordNodes(flow.ui.nodes)
+export function PasswordOnlySettings({
+    flow,
+    orySDK,
+    onSuccess,
+}: {
+    flow: SettingsFlow
+    orySDK: FrontendApi
+    onSuccess: () => void
+}) {
+    const [password, setPassword] = useState('')
+    const [submitting, setSubmitting] = useState(false)
+    const [localFlow, setLocalFlow] = useState(flow)
+    const [networkError, setNetworkError] = useState<string>('')
 
-  // Required hidden values
-  const csrf = getAttr(nodes, 'csrf_token')
-  const method = getAttr(nodes, 'method') || 'password'
+    const nodes = getPasswordNodes(localFlow.ui.nodes)
+    const csrf = getAttr(nodes, 'csrf_token')
 
-  // Basic sanity: if there are no password nodes, tell us why
-  const hasVisiblePassword = nodes.some((n: any) => n.group === 'password')
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setSubmitting(true)
+        setNetworkError('')
+        try {
+            await orySDK.updateSettingsFlow({
+                flow: localFlow.id,
+                updateSettingsFlowBody: {
+                    method: 'password',
+                    password,
+                    csrf_token: csrf,
+                },
+            })
+            onSuccess()
+        } catch (err: any) {
+            const updatedFlow = err?.response?.data
+            if (updatedFlow?.ui) {
+                setLocalFlow(updatedFlow)
+            } else {
+                setNetworkError('An error occurred. Please try again.')
+            }
+        } finally {
+            setSubmitting(false)
+        }
+    }
 
-  if (!hasVisiblePassword) {
-    console.warn(
-      'Settings flow has no password nodes. Dump:',
-      flow.ui.nodes.map((n: any) => ({
-        name: n?.attributes?.name,
-        type: n?.attributes?.type,
-        group: n.group,
-        value: n?.attributes?.value,
-      }))
+    const passwordNode = findNode(localFlow.ui.nodes, 'password') as any
+    const fieldMessages: string[] = passwordNode?.messages?.map((m: any) => m.text) ?? []
+    const flowMessages: string[] = localFlow.ui.messages?.map((m: any) => m.text) ?? []
+    const allErrors = [...flowMessages, ...fieldMessages, ...(networkError ? [networkError] : [])]
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <Label className="block text-sm mb-1">New password</Label>
+                <Input
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    className={`w-full border p-2 rounded${allErrors.length ? ' border-destructive' : ''}`}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+            </div>
+
+            {allErrors.length > 0 && (
+                <div className="space-y-1">
+                    {allErrors.map((msg, i) => (
+                        <p key={i} className="text-sm text-destructive">{msg}</p>
+                    ))}
+                </div>
+            )}
+
+            <Button type="submit" className="px-4 py-2 rounded border" disabled={submitting || !password}>
+                {submitting ? 'Changing…' : 'Change password'}
+            </Button>
+        </form>
     )
-  }
-
-  return (
-    <form method="post" action={flow.ui.action} className="space-y-4">
-      {/* Required hidden inputs */}
-      <Input type="hidden" name="csrf_token" value={csrf} />
-      <Input type="hidden" name="method" value={method} />
-
-      {/* New password */}
-      <div>
-        <Label className="block text-sm mb-1">New password</Label>
-        <Input
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          className="w-full border p-2 rounded"
-          required
-        />
-      </div>
-
-      {/* Optional confirmation (Kratos accepts one field; include if your config expects it) */}
-      <div>
-        <Label className="block text-sm mb-1">Confirm password</Label>
-        <Input
-          name="password_confirmation"
-          type="password"
-          autoComplete="new-password"
-          className="w-full border p-2 rounded"
-        />
-      </div>
-
-      <Button type="submit" className="px-4 py-2 rounded border">
-        Change password
-      </Button>
-    </form>
-  )
 }
 
 const PasswordComponent: React.FC<{}> = ({}) => {
@@ -106,6 +127,7 @@ const PasswordComponent: React.FC<{}> = ({}) => {
     const navigate = useNavigate()
     const [flow, setFlow] = useState<SettingsFlow | undefined>(undefined)
     const { orySDK } = useContext(ProjectContext)
+    const toast = useToast()
 
     const getFlow = useCallback(
         (flowId: string) =>
@@ -165,6 +187,16 @@ const PasswordComponent: React.FC<{}> = ({}) => {
                                 <OryWrapper>
                                     <PasswordOnlySettings
                                         flow={flow as any}
+                                        orySDK={orySDK}
+                                        onSuccess={() => {
+                                            setOpen(false)
+                                            toast.toast({
+                                                title: 'Password changed',
+                                                description: 'Your password was updated successfully.',
+                                                variant: 'default',
+                                                duration: 5000,
+                                            })
+                                        }}
                                     />
                                 </OryWrapper>
                             </div>
@@ -197,6 +229,12 @@ const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
         user.birthDate ? useUtcDate(user.birthDate) : undefined
     )
     const [gender, setGender] = useState<'' | 'male' | 'female' | 'other'>(user.gender ? user.gender : '')
+
+    const {
+        showProfileGender = true,
+        showProfileBirthdate = true,
+        showChangePassword = true,
+    } = getRuntimeConfig()
 
     const [nameError, setNameError] = useState('')
     const [lastNameError, setLastNameError] = useState('')
@@ -243,7 +281,7 @@ const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
             setLastNameError('')
         }
 
-        if (!gender) {
+        if (showProfileGender && !gender) {
             setGenderError('Gender is required.')
             valid = false
         } else {
@@ -251,7 +289,7 @@ const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
         }
 
         return valid
-    }, [name, lastName, gender])
+    }, [name, lastName, gender, showProfileGender])
 
     const handleSubmit = useCallback(() => {
         if (!requestor || !validateForm()) {
@@ -402,25 +440,29 @@ const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
                         {lastNameError && <p className="text-sm text-destructive">{lastNameError}</p>}
                     </div>
 
-                    <div>
-                        <Label htmlFor="birthDate">Birth Date</Label>
-                        <DatePicker date={birthDate} onChange={setBirthDate} />
-                    </div>
+                    {showProfileBirthdate && (
+                        <div>
+                            <Label htmlFor="birthDate">Birth Date</Label>
+                            <DatePicker date={birthDate} onChange={setBirthDate} />
+                        </div>
+                    )}
 
-                    <div>
-                        <Label htmlFor="gender">Gender</Label>
-                        <Select value={gender} onValueChange={(v) => setGender(v as 'male' | 'female' | 'other')}>
-                            <SelectTrigger id="gender" className={genderError ? 'border-destructive' : ''}>
-                                <SelectValue placeholder="Select gender" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {genderError && <p className="text-sm text-destructive">{genderError}</p>}
-                    </div>
+                    {showProfileGender && (
+                        <div>
+                            <Label htmlFor="gender">Gender</Label>
+                            <Select value={gender} onValueChange={(v) => setGender(v as 'male' | 'female' | 'other')}>
+                                <SelectTrigger id="gender" className={genderError ? 'border-destructive' : ''}>
+                                    <SelectValue placeholder="Select gender" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="male">Male</SelectItem>
+                                    <SelectItem value="female">Female</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {genderError && <p className="text-sm text-destructive">{genderError}</p>}
+                        </div>
+                    )}
 
                     <div>
                         <Label htmlFor="email">Email</Label>
@@ -434,11 +476,11 @@ const ProfileSettings: React.FC<{ user: User }> = ({ user }) => {
                             e.preventDefault()
                             handleSubmit()
                         }}
-                        disabled={!name || !lastName || !gender}
+                        disabled={!name || !lastName || (showProfileGender && !gender)}
                     >
                         Save Profile
                     </Button>
-                    <RenderIf isTrue={requestor?.identity === user.identity}>
+                    <RenderIf isTrue={requestor?.identity === user.identity && showChangePassword}>
                         <PasswordComponent />
                     </RenderIf>
                 </CardFooter>
