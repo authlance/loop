@@ -1,6 +1,6 @@
 {
   "name": "@authlance/cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Theia CLI.",
   "publishConfig": {
     "access": "public"
@@ -23,8 +23,8 @@
     "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@authlance/application-manager": "^1.0.2",
-    "@authlance/application-package": "^1.0.2",
+    "@authlance/application-manager": "^1.0.3",
+    "@authlance/application-package": "^1.0.3",
     "yargs": "^15.3.1"
   }
 }

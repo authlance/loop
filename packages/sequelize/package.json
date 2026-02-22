@@ -1,9 +1,9 @@
 {
   "name": "@authlance/sequelize",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "dependencies": {
-    "@authlance/core": "^1.0.2",
+    "@authlance/core": "^1.0.3",
     "@ory/client": "^1.22.1",
     "@reduxjs/toolkit": "^1.9.6",
     "@remix-run/router": "^1.23.0",
@@ -28,7 +28,7 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "^1.0.2",
+    "@authlance/ext-scripts": "^1.0.3",
     "typescript": "^5.4.5"
   },
   "publishConfig": {

@@ -26,6 +26,7 @@ import { PaymentTierDto } from '@authlance/common/lib/common/types/subscriptions
 import { TierSelectionStep } from './TierSelectionStep'
 import useActivateGroupTextProvider from '../../hooks/useActivateGroupTextProvider'
 import useTierSelectionUIProvider from '../../hooks/useTierSelectionUIProvider'
+import useTierSelectionVisibilityProvider from '../../hooks/useTierSelectionVisibilityProvider'
 
 const formSchema = z.object({
     shortName: z.string().min(3, 'Short name is required'),
@@ -559,6 +560,13 @@ export const ActivateGroupComponent: React.FC<ActivateGroupComponentProps> = ({ 
     const { isLoading, data: subscriptionTiers } = useSubscriptionTiers()
     const tierSelectionUIProvider = useTierSelectionUIProvider()
     const tierSelectionUIOverride = useMemo(() => tierSelectionUIProvider?.getTierSelectionUI(), [tierSelectionUIProvider])
+    const tierSelectionVisibilityProvider = useTierSelectionVisibilityProvider()
+    const showTierSelection = useMemo(
+        () => tierSelectionVisibilityProvider
+            ? tierSelectionVisibilityProvider.shouldShowTierSelection(subscriptionTiers ?? [])
+            : (subscriptionTiers?.length ?? 0) > 1,
+        [tierSelectionVisibilityProvider, subscriptionTiers]
+    )
 
     useEffect(() => {
         if (!user) {
@@ -621,7 +629,7 @@ export const ActivateGroupComponent: React.FC<ActivateGroupComponentProps> = ({ 
 
     return (
         <QueryClientProvider client={queryClient ?? getOrCreateQueryClient()}>
-            {step === 'tier-selection' && subscriptionTiers.length > 1 && (
+            {step === 'tier-selection' && showTierSelection && (
                 tierSelectionUIOverride
                     ? tierSelectionUIOverride.getContent({
                         tiers: subscriptionTiers,
@@ -638,7 +646,7 @@ export const ActivateGroupComponent: React.FC<ActivateGroupComponentProps> = ({ 
             )}
             {step === 'group-form' && selectedTier && (
                 <div>
-                    {subscriptionTiers.length > 1 && (
+                    {showTierSelection && (
                         <div className="p-4">
                             <Button variant="ghost" onClick={handleBack}>
                                 &larr; Back to plan selection

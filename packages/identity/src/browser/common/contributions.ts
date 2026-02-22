@@ -235,6 +235,43 @@ export class TierSelectionUIProviderImpl implements TierSelectionUIProvider {
     }
 }
 
+export const TierSelectionVisibilityContribution = Symbol('TierSelectionVisibilityContribution')
+
+export interface TierSelectionVisibilityContribution {
+    shouldShowTierSelection(tiers: PaymentTierDto[]): boolean
+    getWeight(): number
+}
+
+export const TierSelectionVisibilityProvider = Symbol('TierSelectionVisibilityProvider')
+
+export interface TierSelectionVisibilityProvider {
+    shouldShowTierSelection(tiers: PaymentTierDto[]): boolean
+}
+
+@injectable()
+export class TierSelectionVisibilityProviderImpl implements TierSelectionVisibilityProvider {
+
+    @inject(ContributionProvider) @named(TierSelectionVisibilityContribution)
+    protected readonly contributions: ContributionProvider<TierSelectionVisibilityContribution>
+
+    shouldShowTierSelection(tiers: PaymentTierDto[]): boolean {
+        const all = this.contributions?.getContributions()
+        if (!all || all.length === 0) {
+            return tiers.length > 1
+        }
+        let maxWeight = -Infinity
+        let winner: TierSelectionVisibilityContribution | undefined
+        for (const contribution of all) {
+            const weight = contribution.getWeight()
+            if (weight > maxWeight) {
+                maxWeight = weight
+                winner = contribution
+            }
+        }
+        return winner ? winner.shouldShowTierSelection(tiers) : tiers.length > 1
+    }
+}
+
 export const ActivateGroupTextContribution = Symbol('ActivateGroupTextContribution')
 
 export interface ActivateGroupTextContribution {

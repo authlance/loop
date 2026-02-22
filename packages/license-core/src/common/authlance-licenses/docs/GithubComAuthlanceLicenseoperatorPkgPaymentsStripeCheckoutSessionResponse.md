@@ -1,0 +1,22 @@
+# GithubComAuthlanceLicenseoperatorPkgPaymentsStripeCheckoutSessionResponse
+
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**sessionId** | **string** |  | [optional] [default to undefined]
+**url** | **string** |  | [optional] [default to undefined]
+
+## Example
+
+```typescript
+import { GithubComAuthlanceLicenseoperatorPkgPaymentsStripeCheckoutSessionResponse } from './api';
+
+const instance: GithubComAuthlanceLicenseoperatorPkgPaymentsStripeCheckoutSessionResponse = {
+    sessionId,
+    url,
+};
+```
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

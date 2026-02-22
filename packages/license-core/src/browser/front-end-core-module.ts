@@ -17,6 +17,7 @@ import {
     LicensesAdminProductCouponCreatePageContribution,
     LicensesAdminProductCouponEditPageContribution,
 } from './pages/Licenses'
+import { BuyMaintenancePageContribution } from './pages/BuyMaintenance'
 import {
     PaymentsPageContribution,
     PaymentsPaginatedPageContribution,
@@ -30,6 +31,7 @@ import { GroupActionContribution } from '@authlance/identity/lib/browser/common/
 import { LicenseProductContext, PaymentsReportContext } from './common/types'
 
 export default new ContainerModule((bind) => {
+    bind(RoutesApplicationContribution).to(BuyMaintenancePageContribution)
     bind(RoutesApplicationContribution).to(LicensesPricingPageContribution)
     bind(RoutesApplicationContribution).to(LicensesAdminProductsPageContribution)
     bind(RoutesApplicationContribution).to(LicensesAdminProductCreatePageContribution)

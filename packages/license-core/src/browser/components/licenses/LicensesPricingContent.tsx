@@ -38,6 +38,10 @@ const isRecurringPublicProduct = (product: LicensePublicProduct | undefined) => 
     return RECURRING_INTERVALS.has(product.interval.trim().toLowerCase())
 }
 
+const isPerpetualPublicProduct = (product: LicensePublicProduct | undefined) => {
+    return product?.licenseType?.trim().toLowerCase() === 'perpetual_manual'
+}
+
 const formatPublicInterval = (product: LicensePublicProduct) => {
     const interval = product.interval?.trim()
     if (!interval) {
@@ -54,6 +58,7 @@ const PricingCard: React.FC<{
     cardKey: string
     product: LicensePublicProduct
     recurring: boolean
+    perpetual: boolean
     tiered: boolean
     managedProducts?: number
     maxManagedProducts?: number
@@ -75,6 +80,7 @@ const PricingCard: React.FC<{
     cardKey,
     product,
     recurring,
+    perpetual,
     tiered,
     managedProducts,
     maxManagedProducts,
@@ -110,7 +116,7 @@ const PricingCard: React.FC<{
         <Card className="flex h-full flex-col">
             <CardHeader className="items-center space-y-3 text-center">
                 <Badge variant="outline" className="uppercase tracking-wide">
-                    {recurring ? 'Annual subscription' : 'One-off (12 months)'}
+                    {recurring ? 'Annual subscription' : perpetual ? 'Perpetual license' : 'One-off (12 months)'}
                 </Badge>
                 <CardTitle className="text-xl">{product.name}</CardTitle>
                 {product.description && <CardDescription>{product.description}</CardDescription>}
@@ -119,6 +125,11 @@ const PricingCard: React.FC<{
                 <div>
                     <div className="text-3xl font-semibold">{priceLabel ?? 'Contact sales'}</div>
                     <p className="text-sm text-muted-foreground">{intervalLabel}</p>
+                    {perpetual && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Includes 1 year of software updates. Renew maintenance anytime.
+                        </p>
+                    )}
                     {tiered && managedCount && (
                         <p className="text-xs text-muted-foreground">Total for {managedCount} managed products.</p>
                     )}
@@ -290,7 +301,7 @@ export const LicensesPricingContent: React.FC = () => {
     const [cookieDomains, setCookieDomains] = useState<Record<string, string>>({})
     const [managedSelections, setManagedSelections] = useState<Record<string, number>>({})
     const [creatingCheckoutFor, setCreatingCheckoutFor] = useState<string | null>(null)
-    const [pricingFilter, setPricingFilter] = useState<'subscription' | 'one-off'>('subscription')
+    const [pricingFilter, setPricingFilter] = useState<'subscription' | 'one-off' | 'perpetual'>('subscription')
 
     const productCards = useMemo(() => {
         return (products ?? [])
@@ -300,6 +311,7 @@ export const LicensesPricingContent: React.FC = () => {
                     key: resolveProductKey(normalized, index),
                     product: normalized,
                     recurring: isRecurringPublicProduct(normalized),
+                    perpetual: isPerpetualPublicProduct(normalized),
                 }
             })
             .sort((a, b) => Number(b.recurring) - Number(a.recurring))
@@ -310,7 +322,11 @@ export const LicensesPricingContent: React.FC = () => {
     }, [user])
 
     const filteredCards = useMemo(() => {
-        return productCards.filter((card) => (pricingFilter === 'subscription' ? card.recurring : !card.recurring))
+        return productCards.filter((card) => {
+            if (pricingFilter === 'subscription') { return card.recurring }
+            if (pricingFilter === 'perpetual') { return card.perpetual }
+            return !card.recurring && !card.perpetual
+        })
     }, [productCards, pricingFilter])
 
     const hasProducts = (products?.length ?? 0) > 0
@@ -469,7 +485,7 @@ export const LicensesPricingContent: React.FC = () => {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">
-                        Explore subscription plans and one-off licenses available for Authlance tenants.
+                        Explore subscription plans, one-off licenses, and perpetual licenses available for Authlance tenants.
                     </p>
                     <p className="text-sm text-muted-foreground">
                         All paid licenses include 12 months of Authlance access. Create an account and visit <strong>My Licenses</strong> to request a trial license whenever you are ready to evaluate.
@@ -493,6 +509,14 @@ export const LicensesPricingContent: React.FC = () => {
                             aria-pressed={pricingFilter === 'one-off'}
                         >
                             One-off licenses
+                        </Button>
+                        <Button
+                            variant={pricingFilter === 'perpetual' ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setPricingFilter('perpetual')}
+                            aria-pressed={pricingFilter === 'perpetual'}
+                        >
+                            Perpetual
                         </Button>
                     </div>
                 </div>
@@ -518,7 +542,7 @@ export const LicensesPricingContent: React.FC = () => {
                 </Card>
             ) : filteredCards.length > 0 ? (
                 <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                    {filteredCards.map(({ key, product, recurring }) => {
+                    {filteredCards.map(({ key, product, recurring, perpetual: cardPerpetual }) => {
                         const couponState = couponStates[key] ?? { enabled: false, code: '' }
                         const cookieDomain = cookieDomains[key] ?? ''
                         const checkoutPending = creatingCheckoutFor === key
@@ -574,6 +598,7 @@ export const LicensesPricingContent: React.FC = () => {
                                     cardKey={key}
                                     product={product}
                                     recurring={recurring}
+                                    perpetual={cardPerpetual}
                                     tiered={tiered}
                                     managedProducts={managedCount}
                                     maxManagedProducts={product.maxManagedProducts ?? undefined}
