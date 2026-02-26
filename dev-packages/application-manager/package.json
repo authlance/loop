@@ -1,6 +1,6 @@
 {
   "name": "@authlance/application-manager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Application manager API.",
   "publishConfig": {
     "access": "public"
@@ -21,7 +21,7 @@
     "unpublish": "npm unpublish --force --registry=https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@authlance/application-package": "^1.0.3",
+    "@authlance/application-package": "^1.0.4",
     "@babel/core": "^7.10.0",
     "@babel/plugin-transform-classes": "^7.10.0",
     "@babel/plugin-transform-runtime": "^7.10.0",
@@ -51,7 +51,7 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "@authlance/ext-scripts": "^1.0.3"
+    "@authlance/ext-scripts": "^1.0.4"
   },
   "nyc": {
     "extends": "../../configs/nyc.json"
