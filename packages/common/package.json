@@ -1,6 +1,6 @@
 {
   "name": "@authlance/common",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "dependencies": {
     "axios": "^1.6.1",
@@ -15,7 +15,7 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "^1.0.3",
+    "@authlance/ext-scripts": "^1.0.4",
     "typescript": "^5.4.5"
   },
   "publishConfig": {

@@ -482,14 +482,24 @@ export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ payme
                         })
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error creating checkout session:', error)
-                toast.toast({
-                    title: 'Error creating checkout session',
-                    description: 'There was an error creating the checkout session. Please try again later.',
-                    variant: 'destructive',
-                    duration: 5000,
-                })
+                if (error?.response?.status === 409) {
+                    toast.toast({
+                        title: 'Group name is no longer available',
+                        description: 'The group name was taken while you were checking out. Please choose a different name.',
+                        variant: 'destructive',
+                        duration: 5000,
+                    })
+                    await queryClient.invalidateQueries(['duna-group-available'])
+                } else {
+                    toast.toast({
+                        title: 'Error creating checkout session',
+                        description: 'There was an error creating the checkout session. Please try again later.',
+                        variant: 'destructive',
+                        duration: 5000,
+                    })
+                }
                 return
             }
         },

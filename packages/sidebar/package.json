@@ -1,11 +1,11 @@
 {
   "name": "@authlance/sidebar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "dependencies": {
-    "@authlance/common": "^1.0.3",
-    "@authlance/core": "^1.0.3",
-    "@authlance/ui": "^1.0.3",
+    "@authlance/common": "^1.0.4",
+    "@authlance/core": "^1.0.4",
+    "@authlance/ui": "^1.0.4",
     "@remix-run/router": "^1.23.0",
     "@tanstack/react-query": "4.13.0",
     "@tanstack/react-query-devtools": "4.13.0",
@@ -27,7 +27,7 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "^1.0.3",
+    "@authlance/ext-scripts": "^1.0.4",
     "@types/react-router-hash-link": "^2.4.9",
     "typescript": "^5.4.5"
   },

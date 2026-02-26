@@ -1,11 +1,11 @@
 {
   "name": "@authlance/core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "module": "lib/browser/frontend-application.js",
   "dependencies": {
-    "@authlance/common": "^1.0.3",
-    "@authlance/ui": "^1.0.3",
+    "@authlance/common": "^1.0.4",
+    "@authlance/ui": "^1.0.4",
     "@ory/client": "^1.22.1",
     "@ory/elements-react": "1.1.0",
     "@radix-ui/react-icons": "^1.3.0",
@@ -55,7 +55,7 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "@authlance/ext-scripts": "^1.0.3",
+    "@authlance/ext-scripts": "^1.0.4",
     "@ory/cli": "^0.3.4",
     "@radix-ui/react-icons": "^1.3.0",
     "@types/cookie": "^0.5.1",

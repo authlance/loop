@@ -1,9 +1,9 @@
 {
   "name": "@authlance/events-queue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "dependencies": {
-    "@authlance/core": "^1.0.3",
+    "@authlance/core": "^1.0.4",
     "inversify": "^5.1.1",
     "nats": "^2.28.2"
   },
@@ -13,7 +13,7 @@
     }
   ],
   "devDependencies": {
-    "@authlance/ext-scripts": "^1.0.3",
+    "@authlance/ext-scripts": "^1.0.4",
     "typescript": "^5.4.5"
   },
   "publishConfig": {
