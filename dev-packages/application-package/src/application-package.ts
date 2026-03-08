@@ -145,6 +145,9 @@ export class ApplicationPackage {
             if (loopConfig && loopConfig.showChangePassword !== undefined && this._props.frontend.config) {
                 this._props.frontend.config.showChangePassword = loopConfig.showChangePassword;
             }
+            if (loopConfig && loopConfig.webSocketURL !== undefined && this._props.frontend.config) {
+                this._props.frontend.config.webSocketURL = loopConfig.webSocketURL;
+            }
             return this._props;
         }
 
@@ -170,6 +173,9 @@ export class ApplicationPackage {
             }
             if (loopConfig && loopConfig.showChangePassword !== undefined && targetProps.frontend.config) {
                 targetProps.frontend.config.showChangePassword = loopConfig.showChangePassword;
+            }
+            if (loopConfig && loopConfig.webSocketURL !== undefined && targetProps.frontend.config) {
+                targetProps.frontend.config.webSocketURL = loopConfig.webSocketURL;
             }
         }
         this._props = targetProps;

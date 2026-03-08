@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ChevronRight, ChevronUp } from 'lucide-react'
 import {
     Sidebar,
@@ -26,6 +26,7 @@ import { useIsMobile } from '@authlance/ui/lib/browser/hooks/use-mobile'
 import { Link, useNavigate } from 'react-router-dom'
 import useRoutesProvider from '@authlance/core/lib/browser/hooks/user-routes-provider'
 import useSidebarSecondaryItemProvider from '../hooks/useSidebarSecondaryItemProvider'
+import { SecondaryItem } from '@authlance/core/lib/browser/common/ui-contributions'
 import { SessionContext } from '@authlance/core/lib/browser/hooks/useAuth'
 import { hasGroupRole } from '@authlance/core/lib/browser/common/auth'
 import { Avatar, AvatarFallback, AvatarImage } from '@authlance/ui/lib/browser/components/avatar'
@@ -68,7 +69,7 @@ export function AppSidebar() {
         )
     }, [routesProvider, user, targetGroup])
 
-    const secondaryItems = useMemo(() => {
+    const allSecondaryItems = useMemo(() => {
         if (!authContext || !sidebarSecondaryItemProvider) {
             return []
         }
@@ -78,6 +79,31 @@ export function AppSidebar() {
         }
         return items
     }, [sidebarSecondaryItemProvider, authContext, targetGroup, isSysAdmin, navigateHandler])
+
+    const [secondaryItems, setSecondaryItems] = useState<SecondaryItem[]>([])
+
+    useEffect(() => {
+        let cancelled = false
+        async function filterByCondition() {
+            const results = await Promise.all(
+                allSecondaryItems.map(async (item) => {
+                    if (!item.condition) {
+                        return true
+                    }
+                    try {
+                        return await item.condition()
+                    } catch {
+                        return false
+                    }
+                })
+            )
+            if (!cancelled) {
+                setSecondaryItems(allSecondaryItems.filter((_, i) => results[i]))
+            }
+        }
+        filterByCondition()
+        return () => { cancelled = true }
+    }, [allSecondaryItems])
 
     const sortedItems = useMemo(() => {
         const result: {

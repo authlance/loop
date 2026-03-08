@@ -251,9 +251,13 @@ export class BackendPrerenderApplication {
 
     protected renderMarkup(route: RouteContribution, queryClient: QueryClient, store: AppStore, authSession: AuthSession): string {
         const routeObjects = buildRouteObjects(this.routesProvider.getRoutes(), (next) => this.routesProvider.getChildren(next))
+        const rawBase = this.config.frontEndBasePath ?? '/'
+        const basename = rawBase !== '/' ? rawBase.replace(/\/+$/, '') : undefined
+        const fullLocation = basename ? `${basename}${route.path}` : route.path
         const router = createMemoryRouter(routeObjects, {
-            initialEntries: [route.path],
+            initialEntries: [fullLocation],
             initialIndex: 0,
+            ...(basename ? { basename } : {}),
         })
 
         const element = (

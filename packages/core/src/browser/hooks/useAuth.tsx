@@ -165,9 +165,11 @@ export default function AuthContextProvider({
     const licenseApi = clients.licenseApi
     const { toast: pushToast } = useToast()
     const licenseStatusChecked = useRef(false)
+    const isSelectingGroup = useRef(false)
 
     const changeTargetGroup = useCallback((group?: string) => {
         if (!group) {
+            isSelectingGroup.current = true
             setTargetGroup(undefined)
             dispatch(setGroup(undefined))
             if (navigateHandler && currentUser && currentUser.groups && currentUser.groups.length > 0) {
@@ -175,6 +177,7 @@ export default function AuthContextProvider({
             }
             return
         }
+        isSelectingGroup.current = false
         if (currentUser && currentUser.groups && currentUser.groups.length > 0) {
             const foundGroup = currentUser.groups.find((g) => g === group)
             if (foundGroup) {
@@ -309,6 +312,9 @@ export default function AuthContextProvider({
         }
         if (currentUser.roles?.includes('sysadmin')) {
             setSysAdmin(true)
+        }
+        if (isSelectingGroup.current) {
+            return
         }
         if (currentUser.groups && (!contextGroup || !targetGroup)) {
             if (currentUser.groups.length > 0) {

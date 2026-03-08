@@ -35,6 +35,7 @@ export class WebpackGenerator extends AbstractGenerator {
         const bundleFileName = this.pck.props.frontend.config.bundleName ? this.pck.props.frontend.config.bundleName : 'bundle.js';
         const entryName = bundleFileName.endsWith('.js') ? bundleFileName.slice(0, -3) : bundleFileName;
         const frontEndBasePath = this.pck.frontEndBasePath || '/';
+        const webSocketURL = this.pck.props.frontend.config.webSocketURL || 'auto://0.0.0.0:0/ws';
         const isRootBasePath = frontEndBasePath === '/';
         // Ensure trailing slash for webpack publicPath (required by webpack).
         // In development, keep 'auto' so the backend proxy's path stripping still works.
@@ -162,7 +163,9 @@ module.exports = {
             'Access-Control-Allow-Origin': '*'
         },
         client: {
-            webSocketURL: 'auto://0.0.0.0:0/ws'
+            // Connect HMR WebSocket; override in package.json loop.frontend.config.webSocketURL
+            // to bypass proxy chains that corrupt WebSocket frames (e.g. 'ws://localhost:3002/ws').
+            webSocketURL: '${webSocketURL}'
         }
     },
     target: 'web',
