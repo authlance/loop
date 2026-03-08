@@ -200,16 +200,6 @@ export const GroupMembers: React.FC<{ group: string }> = ({ group }) => {
         [isAdmin, adminApi, isMyGroup, group, queryClient, toast]
     )
 
-    const avatarFallback = useMemo(() => {
-        if (user && user.firstName && user.lastName && user.firstName.length > 0 && user.lastName.length > 0) {
-            return user.firstName.charAt(0) + user.lastName.charAt(0)
-        }
-        if (user && user.firstName && user.firstName.length >= 2) {
-            return user.firstName.substring(0, 2)
-        }
-        return 'NA'
-    }, [user])
-
     const columns = useMemo(() => {
         const columnsDefs: ColumnDef<GroupMemberRow>[] = [
             {
@@ -218,10 +208,16 @@ export const GroupMembers: React.FC<{ group: string }> = ({ group }) => {
                 accessorKey: 'avatar',
                 cell: (cell) => {
                     const userRow = cell.row.original
+                    let fallback = 'NA'
+                    if (userRow.firstName && userRow.lastName && userRow.firstName.length > 0 && userRow.lastName.length > 0) {
+                        fallback = userRow.firstName.charAt(0) + userRow.lastName.charAt(0)
+                    } else if (userRow.firstName && userRow.firstName.length >= 2) {
+                        fallback = userRow.firstName.substring(0, 2)
+                    }
                     return (
                         <Avatar className="w-8 h-8">
                             <AvatarImage src={userRow.avatar} alt={userRow.firstName} />
-                            <AvatarFallback>{avatarFallback}</AvatarFallback>
+                            <AvatarFallback>{fallback}</AvatarFallback>
                         </Avatar>
                     )
                 }

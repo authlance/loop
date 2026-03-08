@@ -86,7 +86,8 @@ export namespace ApplicationProps {
                 homeUrl: undefined,
                 showProfileGender: true,
                 showProfileBirthdate: true,
-                showChangePassword: true
+                showChangePassword: true,
+                webSocketURL: undefined
             }
         },
         generator: {
@@ -144,6 +145,8 @@ export interface FrontendApplicationConfig extends ApplicationConfig {
     showChangePassword: boolean | undefined;
 
     frontEndStylesheets?: string | string[];
+
+    webSocketURL: string | undefined;
 
 }
 

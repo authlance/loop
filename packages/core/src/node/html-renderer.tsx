@@ -128,7 +128,8 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
             }
         }
 
-        const markup = this.renderMarkup(match.pathname, match.search, queryClient, store, authSession, container)
+        const basename = this.normalizeBasePath(this.resolveFrontEndBasePath(config))
+        const markup = this.renderMarkup(match.pathname, match.search, queryClient, store, authSession, container, basename)
 
         const documentDefinition = await this.resolveRouteDocument(match.contribution.prerender, context)
         const dehydratedState = dehydrate(queryClient)
@@ -348,15 +349,18 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         return true
     }
 
-    protected renderRawMarkup(pathname: string, search: string, queryClient: QueryClient, store: AppStore, authSession: AuthSession, container: interfaces.Container): string {
+    protected renderRawMarkup(pathname: string, search: string, queryClient: QueryClient, store: AppStore, authSession: AuthSession, container: interfaces.Container, basename?: string): string {
         const provider = this.getRoutesProvider(container)
         const routeObjects = buildRouteObjects(provider.getRoutes(), next => provider.getChildren(next))
         const location = search
             ? `${pathname}${search}`
             : pathname
+        const useBasename = basename && basename !== '/'
+        const fullLocation = useBasename ? `${basename}${location}` : location
         const router = createMemoryRouter(routeObjects, {
-            initialEntries: [location],
+            initialEntries: [fullLocation],
             initialIndex: 0,
+            ...(useBasename ? { basename } : {}),
         })
 
         const element = (
@@ -410,15 +414,18 @@ export class DefaultHtmlRenderer implements HtmlRenderer {
         })
     }
 
-    protected renderMarkup(pathname: string, search: string, queryClient: QueryClient, store: AppStore, authSession: AuthSession, container: interfaces.Container): string {
+    protected renderMarkup(pathname: string, search: string, queryClient: QueryClient, store: AppStore, authSession: AuthSession, container: interfaces.Container, basename?: string): string {
         const provider = this.getRoutesProvider(container)
         const routeObjects = buildRouteObjects(provider.getRoutes(), next => provider.getChildren(next))
         const location = search
             ? `${pathname}${search}`
             : pathname
+        const useBasename = basename && basename !== '/'
+        const fullLocation = useBasename ? `${basename}${location}` : location
         const router = createMemoryRouter(routeObjects, {
-            initialEntries: [location],
+            initialEntries: [fullLocation],
             initialIndex: 0,
+            ...(useBasename ? { basename } : {}),
         })
 
         const element = (
