@@ -308,3 +308,85 @@ export class ActivateGroupTextProviderImpl implements ActivateGroupTextProvider 
         return result
     }
 }
+
+export interface ActivateGroupFormProps {
+    paymentTier: PaymentTierDto
+    onCheckout: (shortName: string, longName: string, signature: string, extraMetadata?: Record<string, string>, trialPeriodDays?: number) => Promise<void>
+}
+
+export const ActivateGroupFormContribution = Symbol('ActivateGroupFormContribution')
+
+export interface ActivateGroupFormContribution {
+    getContent(props: ActivateGroupFormProps): React.ReactElement
+    getWeight(): number
+}
+
+export const ActivateGroupFormProvider = Symbol('ActivateGroupFormProvider')
+
+export interface ActivateGroupFormProvider {
+    getFormOverride(): ActivateGroupFormContribution | undefined
+}
+
+@injectable()
+export class ActivateGroupFormProviderImpl implements ActivateGroupFormProvider {
+
+    @inject(ContributionProvider) @named(ActivateGroupFormContribution)
+    protected readonly contributions: ContributionProvider<ActivateGroupFormContribution>
+
+    getFormOverride(): ActivateGroupFormContribution | undefined {
+        if (!this.contributions || this.contributions.getContributions() === undefined) {
+            return undefined
+        }
+        let maxWeight = -Infinity
+        let result: ActivateGroupFormContribution | undefined = undefined
+        this.contributions.getContributions().forEach((contribution) => {
+            const weight = contribution.getWeight()
+            if (weight > maxWeight) {
+                maxWeight = weight
+                result = contribution
+            }
+        })
+        return result
+    }
+}
+
+export interface GroupFormExtraFieldsRef {
+    validate(): boolean
+    getExtraFields(): Record<string, string>
+}
+
+export const GroupFormExtraFieldsContribution = Symbol('GroupFormExtraFieldsContribution')
+
+export interface GroupFormExtraFieldsContribution {
+    getComponent(): React.ForwardRefExoticComponent<React.RefAttributes<GroupFormExtraFieldsRef>>
+    getWeight(): number
+}
+
+export const GroupFormExtraFieldsProvider = Symbol('GroupFormExtraFieldsProvider')
+
+export interface GroupFormExtraFieldsProvider {
+    getExtraFields(): GroupFormExtraFieldsContribution | undefined
+}
+
+@injectable()
+export class GroupFormExtraFieldsProviderImpl implements GroupFormExtraFieldsProvider {
+
+    @inject(ContributionProvider) @named(GroupFormExtraFieldsContribution)
+    protected readonly contributions: ContributionProvider<GroupFormExtraFieldsContribution>
+
+    getExtraFields(): GroupFormExtraFieldsContribution | undefined {
+        if (!this.contributions || this.contributions.getContributions() === undefined) {
+            return undefined
+        }
+        let maxWeight = -Infinity
+        let result: GroupFormExtraFieldsContribution | undefined = undefined
+        this.contributions.getContributions().forEach((contribution) => {
+            const weight = contribution.getWeight()
+            if (weight > maxWeight) {
+                maxWeight = weight
+                result = contribution
+            }
+        })
+        return result
+    }
+}

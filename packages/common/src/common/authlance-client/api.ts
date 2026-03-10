@@ -1265,9 +1265,21 @@ export interface DunaAuthCommonCreateCheckoutSessionRequest {
      * @memberof DunaAuthCommonCreateCheckoutSessionRequest
      */
     'signature'?: string;
+    /**
+     *
+     * @type {number}
+     * @memberof DunaAuthCommonCreateCheckoutSessionRequest
+     */
+    'trialPeriodDays'?: number;
+    /**
+     *
+     * @type {{ [key: string]: string }}
+     * @memberof DunaAuthCommonCreateCheckoutSessionRequest
+     */
+    'extraMetadata'?: { [key: string]: string };
 }
 /**
- * 
+ *
  * @export
  * @interface DunaAuthCommonCreateCheckoutSessionResponse
  */

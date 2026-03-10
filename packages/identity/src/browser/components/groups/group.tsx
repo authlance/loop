@@ -27,6 +27,9 @@ import { TierSelectionStep } from './TierSelectionStep'
 import useActivateGroupTextProvider from '../../hooks/useActivateGroupTextProvider'
 import useTierSelectionUIProvider from '../../hooks/useTierSelectionUIProvider'
 import useTierSelectionVisibilityProvider from '../../hooks/useTierSelectionVisibilityProvider'
+import useActivateGroupFormProvider from '../../hooks/useActivateGroupFormProvider'
+import useGroupFormExtraFieldsProvider from '../../hooks/useGroupFormExtraFieldsProvider'
+import { GroupFormExtraFieldsRef } from '../../common/contributions'
 
 const formSchema = z.object({
     shortName: z.string().min(3, 'Short name is required'),
@@ -50,7 +53,9 @@ export const GroupForm: React.FC<{
     aside?: boolean
     setFile?: (file: File | undefined) => void
     onSubmit: (data: FormValues, signature: string) => Promise<void>
-}> = ({ currentName, longName, showAvatar, title, homeUrl, description, avatar, setFile, onSubmit, aside = false }) => {
+    extraFieldsComponent?: React.ForwardRefExoticComponent<React.RefAttributes<GroupFormExtraFieldsRef>>
+    extraFieldsRef?: React.RefObject<GroupFormExtraFieldsRef>
+}> = ({ currentName, longName, showAvatar, title, homeUrl, description, avatar, setFile, onSubmit, aside = false, extraFieldsComponent: ExtraFields, extraFieldsRef }) => {
     const { user, debouncer } = useContext(SessionContext)
     const queryClient = useQueryClient()
     const [validName, setValidName] = useState(true)
@@ -224,6 +229,9 @@ export const GroupForm: React.FC<{
                 </CardHeader>
                 <form
                     onSubmit={handleSubmit((data) => {
+                        if (extraFieldsRef?.current && !extraFieldsRef.current.validate()) {
+                            return
+                        }
                         if (isAvailableData && isAvailableData.available && isAvailableData.signature) {
                             onSubmit(data, isAvailableData.signature)
                         }
@@ -269,6 +277,7 @@ export const GroupForm: React.FC<{
                                 </div>
                             </RenderIf>
                         </div>
+                        {ExtraFields && <ExtraFields ref={extraFieldsRef} />}
                     </CardContent>
                     <CardFooter className="flex justify-start">
                         <Button disabled={!validName || !isValid} type="submit">
@@ -440,9 +449,15 @@ export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ payme
     const navigate = useNavigate()
     const activateGroupTextProvider = useActivateGroupTextProvider()
     const textOverride = useMemo(() => activateGroupTextProvider?.getTextOverride(), [activateGroupTextProvider])
+    const activateGroupFormProvider = useActivateGroupFormProvider()
+    const formOverride = useMemo(() => activateGroupFormProvider?.getFormOverride(), [activateGroupFormProvider])
+    const groupFormExtraFieldsProvider = useGroupFormExtraFieldsProvider()
+    const extraFieldsContribution = useMemo(() => groupFormExtraFieldsProvider?.getExtraFields(), [groupFormExtraFieldsProvider])
+    const ExtraFieldsComponent = useMemo(() => extraFieldsContribution?.getComponent(), [extraFieldsContribution])
+    const extraFieldsRef = useRef<GroupFormExtraFieldsRef>(null)
 
-    const handleSubmit = useCallback(
-        async (data: FormValues, signature: string) => {
+    const handleCheckout = useCallback(
+        async (shortName: string, longName: string, signature: string, extraMetadata?: Record<string, string>, trialPeriodDays?: number) => {
             if (!user?.verified) {
                 toast.toast({
                     title: 'Verification required',
@@ -455,19 +470,14 @@ export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ payme
                 return
             }
 
-            const targetGroupData: Group = {
-                id: -1,
-                name: data.shortName,
-                longName: data.longName,
-                homeUrl: data.homeUrl,
-                description: data.description,
-            }
             try {
                 const response = await paymentsApi.authlancePaymentsApiV1CheckoutSessionPost({
                     lookupKey: paymentTier.lookupKey,
-                    organizationLongName: targetGroupData.longName,
-                    organizationName: targetGroupData.name,
+                    organizationLongName: longName,
+                    organizationName: shortName,
                     signature,
+                    extraMetadata,
+                    trialPeriodDays,
                 })
                 if (response.status === 200) {
                     const session = response.data
@@ -506,6 +516,14 @@ export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ payme
         [paymentTier, toast, queryClient, navigate, user]
     )
 
+    const handleSubmit = useCallback(
+        async (data: FormValues, signature: string) => {
+            const extra = extraFieldsRef.current?.getExtraFields()
+            await handleCheckout(data.shortName, data.longName, signature, extra)
+        },
+        [handleCheckout]
+    )
+
     useEffect(() => {
         if (!user) {
             console.error('User is not authenticated')
@@ -533,6 +551,10 @@ export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ payme
         }
     }, [user, targetGroup, navigate])
 
+    if (formOverride) {
+        return formOverride.getContent({ paymentTier, onCheckout: handleCheckout })
+    }
+
     return (
         <div className="p-4">
             <div className="flex justify-center">
@@ -543,6 +565,8 @@ export const ActivateGroup: React.FC<{ paymentTier: PaymentTierDto }> = ({ payme
                         longName=""
                         onSubmit={handleSubmit}
                         aside={false}
+                        extraFieldsComponent={ExtraFieldsComponent}
+                        extraFieldsRef={extraFieldsRef}
                     />
                     {textOverride ? textOverride.getDescription(paymentTier) : (
                         <p className="mb-4 text-sm text-gray-500">
