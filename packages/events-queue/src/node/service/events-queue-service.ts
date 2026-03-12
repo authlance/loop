@@ -76,7 +76,7 @@ export class EventsQueueServiceImpl implements EventsQueueService {
         }
 
         const subject = this.subjectForKey(key)
-        const streamName = subject.replace(/\./g, '-')
+        const streamName = await this.resolveStreamName(subject)
         const consumerName = this.subjectPrefix
             ? `${this.subjectPrefix}-${options.consumerName}`
             : options.consumerName
@@ -168,6 +168,31 @@ export class EventsQueueServiceImpl implements EventsQueueService {
                 currentDisposable?.dispose()
             },
         }
+    }
+
+    private async resolveStreamName(subject: string): Promise<string> {
+        // Try to find an existing stream that already covers this subject.
+        // The Go backend creates broad streams (e.g. "mail_GT" for "mail.>")
+        // so we need to discover them rather than derive our own name.
+        try {
+            const streams = await this.jsManager.streams.list(subject)
+            let batch: StreamInfo[] | undefined
+            while ((batch = await streams.next())) {
+                if (batch && batch.length > 0) {
+                    return batch[0].config.name
+                }
+                break
+            }
+        } catch {
+            // no existing stream found
+        }
+        // Fallback: derive name using the Go convention (broad subject)
+        const parts = subject.split('.')
+        const broadSubject = parts.length >= 2 ? `${parts[0]}.>` : subject
+        return broadSubject
+            .replace(/\./g, '_')
+            .replace(/\*/g, 'STAR')
+            .replace(/>/g, 'GT')
     }
 
     private normalizePrefix(prefix?: string): string | undefined {
